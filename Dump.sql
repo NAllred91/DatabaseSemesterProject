@@ -33,7 +33,11 @@ CREATE TABLE `Games` (
   `playerTwo` varchar(15) NOT NULL,
   `winner` varchar(15) DEFAULT NULL,
   `lastMoveTime` datetime NOT NULL,
-  PRIMARY KEY (`gameId`)
+  PRIMARY KEY (`gameId`),
+  KEY `playerOne_idx` (`playerOne`),
+  KEY `playerTwo_idx` (`playerTwo`),
+  CONSTRAINT `playerOne` FOREIGN KEY (`playerOne`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `playerTwo` FOREIGN KEY (`playerTwo`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -58,7 +62,13 @@ CREATE TABLE `Messages` (
   `timeSent` datetime NOT NULL,
   `sender` varchar(15) NOT NULL,
   `recipient` varchar(15) DEFAULT NULL,
-  `gameId` varchar(30) DEFAULT NULL
+  `gameId` varchar(30) DEFAULT NULL,
+  KEY `sender_idx` (`sender`),
+  KEY `recipient_idx` (`recipient`),
+  KEY `gameId_idx` (`gameId`),
+  CONSTRAINT `gameId` FOREIGN KEY (`gameId`) REFERENCES `Games` (`gameId`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `recipient` FOREIGN KEY (`recipient`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `sender` FOREIGN KEY (`sender`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -82,7 +92,11 @@ CREATE TABLE `Posts` (
   `author` varchar(15) NOT NULL,
   `post` longtext NOT NULL,
   `postTime` varchar(45) NOT NULL,
-  PRIMARY KEY (`author`)
+  `threadId` varchar(20) NOT NULL,
+  PRIMARY KEY (`author`,`postTime`),
+  KEY `threadID_idx` (`threadId`),
+  CONSTRAINT `author` FOREIGN KEY (`author`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `threadID` FOREIGN KEY (`threadId`) REFERENCES `Threads` (`threadId`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -103,10 +117,13 @@ DROP TABLE IF EXISTS `ThreadViews`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `ThreadViews` (
-  `username` varchar(15) NOT NULL,
+  `userName` varchar(15) NOT NULL,
   `viewTime` datetime NOT NULL,
-  `threadId` varchar(20) NOT NULL,
-  PRIMARY KEY (`username`,`viewTime`)
+  `viewedThreadId` varchar(20) NOT NULL,
+  PRIMARY KEY (`userName`,`viewTime`),
+  KEY `threadId_idx` (`viewedThreadId`),
+  CONSTRAINT `thread` FOREIGN KEY (`viewedThreadId`) REFERENCES `Threads` (`threadId`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `user` FOREIGN KEY (`userName`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -180,4 +197,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-11-05 19:49:15
+-- Dump completed on 2014-11-05 20:27:05
