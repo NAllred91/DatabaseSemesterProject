@@ -10,9 +10,13 @@
 		io.on('connection', function(socket)
 		{
 			// TODO use a timeout? something so that this happens first and validation only needs to be done here.
+			// maybe delay all other onConnection callbacks!
+			// or nope, just have the client wait... 
 			socket.on('authorize', function(username)
 			{
 				//TOOD validate and push into idMap
+				socket.emit('confirmed')
+				//socket.emit('denied')
 				dbHelper.addUserConnection(username, function()
 				{
 					//TODO

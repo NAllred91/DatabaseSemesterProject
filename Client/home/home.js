@@ -5,6 +5,7 @@
 	var onReady = _.after(2, function(){
 		$(document).ready(function()
 		{
+			console.log("read")
 			// Append the main view.
 			$('#app').append();
 			$('.topBar').show();
@@ -61,6 +62,12 @@
 
 	var socket = io();
 	var username;
+
+	socket.on('confirmed', function()
+	{
+		console.log("goodtogo")
+		onReady();
+	});
 	
 	// Retrieve the username
 	$.get('/username', function(res)
@@ -72,6 +79,6 @@
 	
 
 	// Load the various application views.
-	onReady();
+	
 
 }())
