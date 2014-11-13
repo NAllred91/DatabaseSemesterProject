@@ -5,11 +5,9 @@
 	var onReady = _.after(2, function(){
 		$(document).ready(function()
 		{
-			console.log("read")
-			// Append the main view.
+			// Append the chat view, that is where the user will begin.
 			$('#app').append();
 			$('.topBar').show();
-			console.log(username)
 			$('#name').append(username);
 
 			// Check for screen dimensions
@@ -37,7 +35,7 @@
 			$("#chat").on('click', function()
 			{
 				$('#app').empty();
-				$('#app').append(aboutElement.layout());
+				$('#app').append(uttElement.layout());
 			});
 
 			$("#PM").on('click', function()
@@ -62,23 +60,18 @@
 
 	var socket = io();
 	var username;
-
-	socket.on('confirmed', function()
-	{
-		console.log("goodtogo")
-		onReady();
-	});
 	
 	// Retrieve the username
 	$.get('/username', function(res)
 		{
 			username = res.user;
-			socket.emit('authorize', username);
+			socket.emit('identify', username);
 			onReady();
 		});
 	
 
 	// Load the various application views.
+	var uttElement = uttView(onReady);
 	
 
 }())

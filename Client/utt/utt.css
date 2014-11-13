@@ -1,0 +1,245 @@
+.onlineUsersContainer
+{
+	width: 20%;
+	height: 0;
+	padding-bottom: 33%;
+	float: left;
+	border-radius: 15px;
+	background-color: white;
+}
+
+.yourGamesTitle
+{
+	width: 99%%;
+	box-shadow: 0px 0px 3px 3px;
+	margin-top: 2%;
+	font-size: 3vw;
+	text-align: center;
+}
+
+.activeGamesTitle,
+.pendingGamesTitle
+{
+	width: 96%;
+	margin-top: 2%;
+	margin-left: 2%;
+	box-shadow: 0px 0px 3px 3px;
+	float: left;
+	text-align: center;
+	font-size: 2vw;
+}
+
+
+.activeGamesContainer,
+.pendingGamesContainer
+{
+	width: 45%;
+	height: 0;
+	margin-top: 3%;
+	padding-bottom: 40%;
+	border-style: solid;
+	border-width: 2px;
+	float: left;
+}
+
+.activeGamesContainer
+{
+	margin-left: 1.5%;
+}
+
+.pendingGamesContainer
+{
+	margin-left: 4%;
+}
+
+.activeGamesContainer .scrollArea,
+.pendingGamesContainer .scrollArea
+{
+	height: 32vw;
+	float: left;
+	clear: left;
+	width: 98%;
+	margin-top:3%;
+}
+
+.userList
+{
+	width: 20%;
+}
+
+.chatArea
+{
+	width: 75%;
+	height: 0;
+	margin-left: 2%;
+	padding-bottom: 33%;
+	float: left;
+	border-radius: 15px;
+	background-color: rgb(236, 149, 138);
+}
+
+.chatArea .scrollArea
+{
+	height: 30vw;
+}
+
+.scrollArea
+{
+	overflow-y: auto;
+	margin-left: 2%;
+	margin-top: 1%;
+}
+
+.active
+{
+	border: 2px solid;
+	margin-right: 2%;
+	margin-top: 1%;
+}
+
+.onlineUser
+{
+	float: left;
+	clear: left;
+	margin-top: 2%;
+	margin-left: 4%;
+}
+
+.typeArea
+{
+	width: 63%;
+	margin-left: 2%;
+	margin-top: 1%;
+}
+
+.submitButton
+{
+	width: 10%;
+}
+
+.requestGame
+{
+	width: 20%;
+
+}
+
+.header
+{
+	display: inline-block;
+	width: 100%;
+}
+
+.board
+{
+	top: 3vh;
+	width: 81vh;
+	position: relative;
+	cursor: pointer;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.boardContainer
+{
+	height: 86vh;
+	width: 88vh;
+	background-color: black;
+	margin-left: auto;
+	margin-right: auto;
+	border-radius: 19px;
+}
+.board .bigGrid
+{
+	width: 33%;
+	height: 0;
+	padding-bottom: 33%;
+	position: relative;
+	float:left;
+	background-color: black;
+}
+
+.board .verticalLine1
+{
+	width: 1%;
+	height: 0;
+	padding-bottom: 90%;
+	margin-top: 5%;
+	margin-left: 32.5%;
+	position: absolute;
+	background-color: rgb(9,199,146);
+}
+
+.board .verticalLine2
+{
+	width: 1%;
+	height: 0;
+	padding-bottom: 90%;
+	margin-top: 5%;
+	margin-left: 65.5%;
+	position: absolute;
+	background-color: rgb(9,199,146);
+}
+
+.board .horizontalLine1
+{
+	height: 1%;
+	width: 0;
+	padding-right: 90%;
+	margin-left: 5%;
+	margin-top: 32.5%;
+	background-color: rgb(9,199,146);
+	position: absolute;
+}
+
+.board .horizontalLine2
+{
+	height: 1%;
+	width: 0;
+	padding-right: 90%;
+	margin-left: 5%;
+	margin-top: 65.5%;
+	background-color: rgb(9,199,146);
+	position: absolute;
+}
+
+.board .bigLine.horizontalLine1,
+.board .bigLine.horizontalLine2
+{
+	background-color: rgb(207,8,8);
+	height: 1vh;
+}
+
+.board .bigLine.verticalLine1,
+.board .bigLine.verticalLine2
+{
+	background-color: rgb(207,8,8);
+	width: 1vh;
+}
+
+.uttGame .uttGameButton
+{
+	float: right;
+}
+
+.uttGame .turnIndicator
+{
+	display: inline;
+}
+
+.ximg
+{
+	color: blue;
+	font-size: 9vh;
+	width: 0;
+	height: 0;
+	position: absolute;
+}
+
+.oimg
+{
+	color: red;
+	font-size: 9vh;
+	width: 0;
+	height: 0;
+	position: absolute;
+}

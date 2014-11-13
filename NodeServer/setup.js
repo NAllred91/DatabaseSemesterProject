@@ -6,7 +6,7 @@
 		return [
 			'./login/routes.js',
 			'./home/routes.js',
-			'./game/routes.js',
+			'./utt/routes.js',
 			'./forum/routes.js'
 		]
 	}

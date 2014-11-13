@@ -42,7 +42,6 @@
 		db.query(databaseCall, function(err, rows, fields)
 		{
 			console.log(err,rows,fields);
-			callback();
 		});
 	}
 
@@ -55,7 +54,6 @@
 		db.query(databaseCall, function(err, rows, fields)
 		{
 			console.log(err,rows,fields);
-			callback();
 		});
 	}
 
@@ -78,5 +76,70 @@
 		});
 	}
 
+	databaseInterface.prototype.getOnlineUsers = function(callback)
+	{
+		var db = this.db;
+		callback();
+	}
+
+	databaseInterface.prototype.getActiveAndPendingGames = function(username, callback)
+	{
+		var db = this.db;
+		callback();
+	}
+
+	databaseInterface.prototype.getFinishedGames = function(username, callback)
+	{
+		var db = this.db;
+		callback();
+	}
+
+	databaseInterface.prototype.getGameData = function(gameId, callback)
+	{
+		var db = this.db;
+		callback();
+	}
+
+	databaseInterface.prototype.getChatRoomLog = function(callback)
+	{
+		var db = this.db;
+		callback();
+	}
+
+	databaseInterface.prototype.getGameChatLog = function(gameId, callback)
+	{
+		var db = this.db;
+		callback();
+	}
+
+	databaseInterface.prototype.addChatRoomMessage = function(username, message, callback)
+	{
+		var db = this.db;
+		callback();
+	}
+
+	databaseInterface.prototype.addNewGame = function(waitingPlayer, activePlayer, callback)
+	{
+		var db = this.db;
+		callback();
+	}
+
+	databaseInterface.prototype.acceptGame = function(username, gameId, callback)
+	{
+		var db = this.db;
+		callback();
+	}
+
+	databaseInterface.prototype.rejectGame = function(username, gameId, callback)
+	{
+		var db = this.db;
+		callback();
+	}
+
+	databaseInterface.prototype.updateGame = function(username, gameId, board, playableGrid, state, wonBy, callback)
+	{
+		var db = this.db;
+		callback();
+	}
 	module.exports = databaseInterface;
 }());

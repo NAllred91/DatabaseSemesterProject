@@ -9,24 +9,17 @@
 
 		io.on('connection', function(socket)
 		{
-			// TODO use a timeout? something so that this happens first and validation only needs to be done here.
-			// maybe delay all other onConnection callbacks!
-			// or nope, just have the client wait... 
-			socket.on('authorize', function(username)
+			// The connection must identify what user it is representing.  This is
+			// an obvious security flaw, however it is ok for the purposes of the class.
+			// Under normal use of the website this will be suffecient. 
+			socket.on('identify', function(username)
 			{
-				//TOOD validate and push into idMap
-				socket.emit('confirmed')
-				//socket.emit('denied')
-				dbHelper.addUserConnection(username, function()
-				{
-					//TODO
-				});
+				idMap[socket.id] = username;
+				dbHelper.addUserConnection(username);
 				socket.on('disconnect', function()
 				{
-					dbHelper.removeUserConnection(username, function(err)
-					{
-						//TODO
-					});
+					dbHelper.removeUserConnection(username);
+					delete idMap[socket.id]
 				});
 			});		
 		});

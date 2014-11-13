@@ -43,6 +43,8 @@
 	// Create an instance of the database helper.
 	var dbHelper = new dbHelperApp(connection);	
 
+	//TODO clear all users connectionCount
+
 
 	var io = require('socket.io').listen(server);
 	
