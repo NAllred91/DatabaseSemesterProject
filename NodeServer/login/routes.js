@@ -5,22 +5,19 @@
 
 	var setup = function(app, dbHelper, io)
 	{
-		// List of online users
-		var onlineUsers = {};
-
-
 		// Begin Routes
 
 		// Redirect to home if the user is logged in.
 		app.get('/login.html', function(req,res,next)
 		{
-			if(req.session && req.session.user && onlineUsers[req.session.user])
+			if(req.session && req.session.user)
 			{
 				res.redirect('/home.html');
-				return;
 			}
-
-			next()
+			else
+			{
+				next();
+			}
 		});
 
 		// Listen for the user to log in.
@@ -29,52 +26,35 @@
 			var username = req.body.username;
 			var password = req.body.password;
 
-			db.collection('users').findOne(
+			dbHelper.signOnUser(username, password, function(err)
 			{
-				lowerCaseUsername: username.toLowerCase(),
-				password: password
-			}, function(err, user)
-			{
-				if(err)
+				if(err === "Database Error")
 				{
-					res.status(500).end();
-					return;
+					res.sendStatus(500);
 				}
-
-				if(!user || user.password !== password)
+				else if(err)
 				{
-					res.status(401).end();
-					return;
+					res.sendStatus(401);
 				}
-				db.collection('users').update(
+				else
 				{
-					lowerCaseUsername: username.toLowerCase()
-				},
-				{
-					$set: {online: true}
-				}, function(err)
-				{
-					if(!err)
-					{
-						console.log("logged on")
-						req.session.user = user.username;
-						res.redirect('/home.html');
-					}
-				});
-			});                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+					req.session.user = username;
+					res.redirect('/home.html');
+				}
+			});                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 		});
 
 		// If the user is already logged in redirect to home.
 		app.get('/register.html', function(req, res, next)
 		{
-			console.log('get')
-			if(req.session.user)
+			if(req.session && req.session.user)
 			{
 				res.redirect('/home.html');
-				return;
 			}
-
-			next();
+			else
+			{
+				next();
+			}		
 		});
 
 		// Listen for users registering.
@@ -83,42 +63,29 @@
 			var username = req.body.username;
 			var password = req.body.password;
 
-			db.collection('users').findOne(
+			if(!username && !password)
 			{
-				lowerCaseUsername: username.toLowerCase()
-			}, function(err, user)
-			{
-				if(err)
-				{
-					res.status(500).end();
-					return;
-				}
-				if(user)
-				{
-					res.status(409).end();
-					return;
-				}
-				if(user && !password)
-				{
-					res.status(406).end();
-					return;
-				}
+				res.sendStatus(406);
+				return;
+			}
 
-				db.collection('users').insert(
+			dbHelper.registerUser(username, password,
+				function(err)
 				{
-					username: username,
-					lowerCaseUsername: username.toLowerCase(),
-					password: password
-				}, function(err)
-				{
-					if(err)
+					console.log(err)
+					if(err === "ER_DUP_ENTRY")
 					{
-						res.status(500).end();
-						return;
+						res.sendStatus(409);
 					}
-					res.redirect('/login.html');
-				});		
-			});
+					else if(err)
+					{
+						res.sendStatus(500);
+					}
+					else
+					{
+						res.redirect('/login.html');
+					}
+				});
 		});
 
 		// Listen for users signing out.
