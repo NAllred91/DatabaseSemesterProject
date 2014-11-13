@@ -3,15 +3,16 @@
 	var _ = require('underscore');
 	var express = require('express');
 
-	var setup = function(app, dbHelper, io)
+	var setup = function(app, dbHelper, io, idMap)
 	{
 		// Begin Routes
 
 		io.on('connection', function(socket)
 		{
+			// TODO use a timeout? something so that this happens first and validation only needs to be done here.
 			socket.on('authorize', function(username)
 			{
-				//TOOD validate
+				//TOOD validate and push into idMap
 				dbHelper.addUserConnection(username, function()
 				{
 					//TODO

@@ -8,6 +8,8 @@
 	var setup = require('./setup.js');
 	var paths = setup();
 	var dbHelperApp = require('./DatabaseInterface.js');
+	// A map that will be used to link socket.id's to usernames.
+	var idMap = {};
 
 	var app = express();
 	var server = app.listen(8001);
@@ -47,7 +49,7 @@
 	// Start up all of the routes!
 	_.each(paths, function(route)
 	{
-		require(route)(app, dbHelper, io);
+		require(route)(app, dbHelper, io, idMap);
 	});
 
 	// Final app.all, redirects any requests that weren't 
