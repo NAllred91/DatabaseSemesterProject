@@ -7,6 +7,25 @@
 	{
 		// Begin Routes
 
+		io.on('connection', function(socket)
+		{
+			socket.on('authorize', function(username)
+			{
+				//TOOD validate
+				dbHelper.addUserConnection(username, function()
+				{
+					//TODO
+				});
+				socket.on('disconnect', function()
+				{
+					dbHelper.removeUserConnection(username, function(err)
+					{
+						//TODO
+					});
+				});
+			});		
+		});
+
 		// Redirect to home if the user is logged in.
 		app.get('/login.html', function(req,res,next)
 		{
@@ -26,14 +45,16 @@
 			var username = req.body.username;
 			var password = req.body.password;
 
-			dbHelper.signOnUser(username, password, function(err)
+			dbHelper.validateUser(username, password, function(err)
 			{
+				console.log(err)
 				if(err === "Database Error")
 				{
 					res.sendStatus(500);
 				}
 				else if(err)
 				{
+					console.log(err)
 					res.sendStatus(401);
 				}
 				else
@@ -91,20 +112,12 @@
 		// Listen for users signing out.
 		app.post('/signOut', function(req, res)
 		{
-			db.collection('users').update(
-				{
-					username: req.session.user
-				},
-				{
-					$set: {online: false}
-				}, function(err)
-				{
-					if(!err)
-					{
-						req.session.user = undefined;
-						res.redirect('/login.html');
-					}
-				});
+			console.log(req.session)
+			if(req.session)
+			{
+				req.session.user = undefined;
+			}
+				res.redirect('/login.html');
 		});
 
 		// Serve up html, css, js, and images.
@@ -124,7 +137,6 @@
 			else
 			{
 				res.redirect('/login.html');
-				return;
 			}
 		});
 

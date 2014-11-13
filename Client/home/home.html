@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Nick's Project Site</title>
+    <script src="jquery.js"></script>
+    <script src="underscore.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="home.js"></script>
+
+    <link rel="shortcut icon" href="flower.png"></link>
+    <link rel="stylesheet" type="text/css" href="home.css"></link>
+  </head>
+  <body>
+  	<div class="topBar" style="display:none">
+  		<div class="topBarInternal">
+  			<img class="pretty" src="flower.png">
+	  		Hello, <label id="name"></label>.	
+	  		<div>Select a project from the list.</div>
+	  		<input type="button" id="chat" value="ChatRoom" />
+	  		<input type="button" id="PM" value="Messages" />
+		    <input type="button" id="utt" value="Ultimate Tic-Tac-Toe" />
+		    <input type="button" id="forum" value="Forum" />
+	  		<div class="signOut">
+			    <form class="form" id="signout" action="/signOut" method="post">
+			    	<input type="submit" value="Sign Out" />
+			    </form>
+
+			</div>
+		</div>
+	</div>
+	
+	<div class="appContainer" id="appContainer">
+		<div class="app" id="app"></div>
+	</div>
+  </body>
+</html>

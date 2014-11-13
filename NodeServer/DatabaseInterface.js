@@ -1,26 +1,27 @@
 (function(){
 
+	var _ = require('underscore');
 
 	var databaseInterface = function(db){
 		this.db = db;
 	}
 
-	databaseInterface.prototype.signOnUser = function(userName, password, callback)
+	databaseInterface.prototype.validateUser = function(userName, password, callback)
 	{
 		var db = this.db;
 
-		var databaseCall = "UPDATE Users SET online=true WHERE userName='" + userName + "' AND password='" + password +"'";
+		var databaseCall = "SELECT COUNT(*) FROM Users WHERE userName='" + userName + "' AND password='" + password + "'";
 		console.log(databaseCall)
-		db.query(databaseCall, function(err, rows, fields)
+		db.query(databaseCall, function(err, count)
 		{
-			console.log(err,rows,fields);
+			console.log(err,count);
 			if(err)
 			{
 				callback(new Error('Database Error'));
 			}
 			else
 			{
-				if(rows.changedRows === 1)
+				if(count[0]['COUNT(*)'] === 1)
 				{
 					callback();
 				}
@@ -32,11 +33,24 @@
 		});
 	}
 
-	databaseInterface.prototype.signOffUser = function(userName, callback)
+	databaseInterface.prototype.removeUserConnection = function(userName, callback)
 	{
 		var db = this.db;
 
-		var databaseCall = "UPDATE Users SET online=false WHERE userName='"+ userName +"'";
+		var databaseCall = "UPDATE Users SET connectionCount=connectionCount - 1 WHERE userName='"+ userName +"'";
+
+		db.query(databaseCall, function(err, rows, fields)
+		{
+			console.log(err,rows,fields);
+			callback();
+		});
+	}
+
+	databaseInterface.prototype.addUserConnection = function(userName, callback)
+	{
+		var db = this.db;
+
+		var databaseCall = "UPDATE Users SET connectionCount=connectionCount + 1 WHERE userName='"+ userName +"'";
 
 		db.query(databaseCall, function(err, rows, fields)
 		{
@@ -49,7 +63,7 @@
 	{
 		var db = this.db;
 
-		var databaseCall = "INSERT INTO USERS (userName, password, online) VALUES ('" + userName + "','" + password + "',false)"
+		var databaseCall = "INSERT INTO USERS (userName, password, online, connectionCount) VALUES ('" + userName + "','" + password + "',false,0)"
 		db.query(databaseCall, function(err, rows, fields)
 		{
 			console.log(err,rows,fields);
