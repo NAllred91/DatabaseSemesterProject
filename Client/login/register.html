@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Registration</title>
+    <script src="jquery.js"></script>
+    <script src="register.js"></script>
+    <link rel="shortcut icon" href="flower.png"></link>
+    <link rel="stylesheet" type="text/css" href="register.css"></link>
+  </head>
+  <body class="body">
+    <div class="header">
+      Register
+    </div>
+    <div class="formContainer">
+      <form class="form" id="register" action="/register" method="post">
+        <div class="formDiv">
+          <label>Username:</label>
+          <input class="formInput" id="username" type="text" name="username" />
+          <br/>
+        </div>
+        <div class="formDiv">
+          <label>Password:</label>
+          <input class="formInput" id="password" type="password" name="password" />
+        </div>
+        <div class="formDiv">
+        <label>Re-Type Password:</label>
+          <input class="formInput" id="passwordAgain" type="password"/>
+        </div>
+        <div class="formButtons">
+          <input type="submit" value="Sign Up!" />
+        </div>
+      </form>
+      <div class="form">
+        <button type="submit" id="signin">Return To Sign In</button>
+        <div id="error"></div>
+      </div>
+    </div>
+    <div class="advise">
+      This website is <b>NOT</b> secure.  <b>Passwords are not hashed</b>, so something simple
+      and non-personal should be used.  Maybe use "pass" or "1234"...<br/>
+      In order to encourage non-personal passwords, passwords are limited to 4 characters.
+    </div>
+    <div class="dino">
+      <img src="pink-dino-hi.png">
+    </div>
+  </body>
+</html>

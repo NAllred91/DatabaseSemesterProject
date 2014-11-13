@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Login</title>
+    <script src="jquery.js"></script>
+    <script src="login.js"></script>
+    <link rel="shortcut icon" href="flower.png"></link>
+    <link rel="stylesheet" type="text/css" href="login.css"></link>
+  </head>
+  <body class="body">
+    <div class="header">
+      Login
+    </div>
+    <div class="formContainer">
+      <form class="form" id="login" action="/login" method="post">
+        <div>
+          <label>Username:</label>
+          <input type="text" name="username" />
+          <br/>
+        </div>
+        <div>
+          <label>Password:</label>
+          <input type="password" name="password" />
+        </div>
+        <div>
+          <input type="submit" value="Sign In!" />
+        </div>
+      </form>
+      <div class="form">
+        <button type="submit" id="register">Create Account</button>
+        <div id="error"></div>
+      </div>
+    </div>
+  <div class="message">
+  If you don't want to create an account, sign in with username <b>"guest"</b> and password <b>"pass"</b>.
+  </div>
+  </body>
+</html>

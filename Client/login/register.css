@@ -1,0 +1,49 @@
+.formDiv
+{
+	display: block;
+}
+
+.formContainer
+{
+	width: 170px;
+	clear: both;
+	box-shadow: 5px 5px 5px;
+	background-color: rgb(163, 189, 192);
+	float: left;
+	margin-right: 30px;
+}
+
+.formContainer input
+{
+	width: 95%;
+	clear: both;
+}
+
+.formContainer button
+{
+	width: 95%;
+	clear: both;
+}
+
+.form
+{
+		margin: 5px;
+}
+
+.header
+{
+	font-size: xx-large;
+	box-shadow: 5px 5px 5px;
+	margin-bottom: 21px;
+	background-color: rgb(163, 189, 192);
+}
+
+.body
+{
+	background-color: rgb(57, 221, 221);
+}
+
+.advise
+{
+	
+}
