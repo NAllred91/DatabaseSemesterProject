@@ -29,26 +29,17 @@ CREATE TABLE `Games` (
   `board` tinyblob NOT NULL,
   `startTime` datetime NOT NULL,
   `endTime` datetime DEFAULT NULL,
-  `playerOne` varchar(15) NOT NULL,
-  `playerTwo` varchar(15) NOT NULL,
+  `waitingPlayer` varchar(15) NOT NULL,
+  `activePlayer` varchar(15) NOT NULL,
   `winner` varchar(15) DEFAULT NULL,
   `lastMoveTime` datetime NOT NULL,
   PRIMARY KEY (`gameId`),
-  KEY `playerOne_idx` (`playerOne`),
-  KEY `playerTwo_idx` (`playerTwo`),
-  CONSTRAINT `playerOne` FOREIGN KEY (`playerOne`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `playerTwo` FOREIGN KEY (`playerTwo`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  KEY `playerOne_idx` (`waitingPlayer`),
+  KEY `playerTwo_idx` (`activePlayer`),
+  CONSTRAINT `playerOne` FOREIGN KEY (`waitingPlayer`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `playerTwo` FOREIGN KEY (`activePlayer`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `Games`
---
-
-LOCK TABLES `Games` WRITE;
-/*!40000 ALTER TABLE `Games` DISABLE KEYS */;
-/*!40000 ALTER TABLE `Games` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `Messages`
@@ -73,15 +64,6 @@ CREATE TABLE `Messages` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `Messages`
---
-
-LOCK TABLES `Messages` WRITE;
-/*!40000 ALTER TABLE `Messages` DISABLE KEYS */;
-/*!40000 ALTER TABLE `Messages` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `Posts`
 --
 
@@ -99,15 +81,6 @@ CREATE TABLE `Posts` (
   CONSTRAINT `threadID` FOREIGN KEY (`threadId`) REFERENCES `Threads` (`threadId`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `Posts`
---
-
-LOCK TABLES `Posts` WRITE;
-/*!40000 ALTER TABLE `Posts` DISABLE KEYS */;
-/*!40000 ALTER TABLE `Posts` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `ThreadViews`
@@ -128,15 +101,6 @@ CREATE TABLE `ThreadViews` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `ThreadViews`
---
-
-LOCK TABLES `ThreadViews` WRITE;
-/*!40000 ALTER TABLE `ThreadViews` DISABLE KEYS */;
-/*!40000 ALTER TABLE `ThreadViews` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `Threads`
 --
 
@@ -154,15 +118,6 @@ CREATE TABLE `Threads` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `Threads`
---
-
-LOCK TABLES `Threads` WRITE;
-/*!40000 ALTER TABLE `Threads` DISABLE KEYS */;
-/*!40000 ALTER TABLE `Threads` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `Users`
 --
 
@@ -172,21 +127,12 @@ DROP TABLE IF EXISTS `Users`;
 CREATE TABLE `Users` (
   `userName` varchar(15) NOT NULL,
   `password` varchar(20) NOT NULL,
-  `online` bit(1) DEFAULT NULL,
   `wins` int(11) DEFAULT NULL,
   `loses` int(11) DEFAULT NULL,
+  `connectionCount` int(10) unsigned NOT NULL,
   PRIMARY KEY (`userName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `Users`
---
-
-LOCK TABLES `Users` WRITE;
-/*!40000 ALTER TABLE `Users` DISABLE KEYS */;
-/*!40000 ALTER TABLE `Users` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -197,4 +143,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-11-05 20:27:05
+-- Dump completed on 2014-11-13 22:36:46
