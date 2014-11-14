@@ -32,16 +32,10 @@
 
 			// Handle each button. Clear the app container
 			// and then load the neccessary files.
-			$("#chat").on('click', function()
-			{
-				$('#app').empty();
-				$('#app').append(uttElement.layout());
-			});
-
 			$("#PM").on('click', function()
 			{
 				$('#app').empty();
-				$('#app').append(resumeElement.layout());
+				$('#app').append();
 			});
 
 			$("#utt").on('click', function()
@@ -50,10 +44,16 @@
 				$('#app').append(uttElement.layout());
 			});
 
+			$("#profiles").on('click', function()
+			{
+				$('#app').empty();
+				$('#app').append();
+			});
+
 			$("#forum").on('click', function()
 			{
 				$('#app').empty();
-				$('#app').append(dragonElement.layout());
+				$('#app').append();
 			});
 		});
 	});
