@@ -40,27 +40,40 @@
 		// has been given.
 		var restrictedSocket = function(socket, name)
 		{
+			var userList = [];
+
 			var sendOnlineUsers = function()
 			{
-				socket.emit('onlineUsers', _.without(onlineUserList, name));
+				// Only send the user list if it has changed.
+				if(_.difference(onlineUserList, userList, [name]).length 
+					|| _.difference(userList, onlineUserList).length)
+				{
+					userList = _.without(onlineUserList, name);
+					socket.emit('onlineUsers', userList);
+				}
 
 				_.delay(function()
 				{
-					sendOnlineUsers();
-				},5000);
+					if(socket.connected)
+					{
+						sendOnlineUsers();
+					}		
+				},500);
 			}
+
+			sendOnlineUsers()
 		};
 
 		var getOnlineUsersFromDatabase = function()
 		{
-			dbHelper.getOnlineUsers(function(err, users)
+			dbHelper.getOnlineUsers(function(users)
 			{
 				onlineUserList = users;
 
 				_.delay(function()
 				{
 					getOnlineUsersFromDatabase();
-				},4500);
+				},2000);
 			})
 		};
 
@@ -81,6 +94,20 @@
 			{
 				res.sendStatus(401);
 			}
+		});
+
+		app.get('/onlineUsers', function(req, res)
+		{
+			if(req.session)
+			{
+				var name = req.session.user;
+				res.send(_.without(onlineUserList, name));
+			}
+			else
+			{
+				res.sendStatus(401);
+			}
+			
 		});
 	}
 

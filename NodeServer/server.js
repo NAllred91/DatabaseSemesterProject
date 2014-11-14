@@ -43,7 +43,17 @@
 	// Create an instance of the database helper.
 	var dbHelper = new dbHelperApp(connection);	
 
-	//TODO clear all users connectionCount
+	// Reset all users connection count to 0 since
+	// no users have connected yet.  Any information
+	// here is left over from last time the server ran.
+	dbHelper.resetConnectionCounts(function(err)
+	{
+		if(err)
+		{
+			console.log("Database Error: connectionCount reset failed");
+		}
+
+	});
 
 
 	var io = require('socket.io').listen(server);

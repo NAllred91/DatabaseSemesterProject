@@ -106,7 +106,11 @@ var uttChatRoom = function(socket, username, templates, onLoadGame)
 		element.find('#chatScrollArea').scrollTop(element.find('#chatScrollArea')[0].scrollHeight)
 	});
 
-	socket.on('onlineUsers', function(users){updateUserList(users)});
+	socket.on('onlineUsers', function(users)
+	{
+		console.log(users)
+		updateUserList(users)
+	});
 
 	socket.on('gameRequested', function(user, gameId)
 	{
@@ -164,8 +168,26 @@ var uttChatRoom = function(socket, username, templates, onLoadGame)
 
 	var initializeChatWindow = function()
 	{
-		//TODO
-		console.log("YOU NEED TO INITIALIZE!!!!!!!!!")
+		$.get('/onlineUsers', function(users)
+		{
+			updateUserList(users);
+		});
+
+		$.get('/utt/chatRoomLog', function(log)
+		{
+			element.find("#chatScrollArea").empty();
+			_.each(log, function(message)
+			{
+				element.find("#chatScrollArea").append(templates.chatMessage(
+					{
+						user: message.sender,
+						message: message.message
+					})
+				);
+
+				element.find('#chatScrollArea').scrollTop(element.find('#chatScrollArea')[0].scrollHeight)
+			});
+		});
 	}
 
 

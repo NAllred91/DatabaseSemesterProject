@@ -9,8 +9,6 @@
 
 	var setup = function(app, dbHelper, io, idMap)
 	{
-		var userList = [];
-		var newMessages = [];
 		app.use(express.static(__dirname + '/../../Client/utt'));
 		app.use(express.static(__dirname + '/../../Client/utt/templates'));
 
@@ -76,16 +74,10 @@
 
 		app.get('/utt/chatRoomLog', function(req, res)
 		{
-			dbHelper.getChatRoomLog(function(err, log)
+			dbHelper.getChatRoomLog(function(log)
 			{
-				if(err)
-				{
-					res.send(500);
-				}
-				else
-				{
-					res.send(log);
-				}
+				console.log(log)
+				res.send(log);
 			});
 		});
 

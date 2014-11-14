@@ -43,21 +43,15 @@
 			var username = req.body.username;
 			var password = req.body.password;
 
-			dbHelper.validateUser(username, password, function(err)
+			dbHelper.validateUser(username, password, function(correctCaseName)
 			{
-				console.log(err)
-				if(err === "Database Error")
+				if(!correctCaseName)
 				{
-					res.sendStatus(500);
-				}
-				else if(err)
-				{
-					console.log(err)
 					res.sendStatus(401);
 				}
 				else
 				{
-					req.session.user = username;
+					req.session.user = correctCaseName;
 					res.redirect('/home.html');
 				}
 			});                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
