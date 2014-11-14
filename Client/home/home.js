@@ -6,7 +6,7 @@
 		$(document).ready(function()
 		{
 			// Append the chat view, that is where the user will begin.
-			$('#app').append();
+			$('#app').append(uttElement.layout());
 			$('.topBar').show();
 			$('#name').append(username);
 
