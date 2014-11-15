@@ -169,7 +169,34 @@
 	databaseInterface.prototype.getActiveAndPendingGames = function(username, callback)
 	{
 		var db = this.db;
-		callback();
+
+		var queryTemplate = _.template("SELECT state, gameId, challenger, challengee, lastMoveTime, activePlayer FROM Games WHERE (state = 'pending' OR state = 'active') AND (challenger = '<%= username %>' OR challengee = '<%= username %>')")
+		
+		var databaseCall = queryTemplate(
+		{
+			username: username
+		});
+
+		db.query(databaseCall, function(err, result, somethin)
+		{
+			if(err)
+			{
+				console.log("Database Error: Getting active and pending games failed.. ",err);
+				callback([]);
+			}
+			else
+			{
+				// TODO consistency....
+				var formattedResults = _.map(result, function(game)
+				{
+					game.to = game.challengee;
+					game.from = game.challenger;
+					return game;
+				});
+
+				callback(formattedResults);
+			}
+		});
 	}
 
 	databaseInterface.prototype.getFinishedGames = function(username, callback)
@@ -181,7 +208,35 @@
 	databaseInterface.prototype.getGameData = function(gameId, callback)
 	{
 		var db = this.db;
-		callback();
+
+		var queryTemplate = _.template("SELECT * FROM Games WHERE gameId = '<%= gameId %>'");
+
+		var databaseCall = queryTemplate(
+		{
+			gameId: gameId
+		});
+
+		db.query(databaseCall, function(err, game)
+		{
+			if(err)
+			{
+				console.log("Database Error: Getting game failed.. ",err);
+				callback();
+			}
+			else if(game.length === 0)
+			{
+				callback()
+			}
+			else
+			{
+				// TODO consistency....
+				game[0].to = game[0].challengee;
+				game[0].from = game[0].challenger;
+				game[0].board = JSON.parse(game[0].board);
+
+				callback(game[0]);
+			}
+		});
 	}
 
 	databaseInterface.prototype.getChatRoomLog = function(callback)

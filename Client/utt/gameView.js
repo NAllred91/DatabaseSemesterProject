@@ -63,15 +63,17 @@ var uttGameLogic = function(socket, username, templates, onLoadChat)
 		if(validateMove(bigGrid, miniGrid))
 		{
 			//TODO place image then if error remove image.
-			placeXImage(bigGrid, miniGrid);
-			socket.emit('updateGame', gameData.gameId, bigGrid, miniGrid,
+			placeXImage(bigGrid, miniGrid, function(img)
+			{
+				socket.emit('updateGame', gameData.gameId, bigGrid, miniGrid,
 				function(err)
 				{
 					if(err)
 					{
-						//remove x
+						element.find(img).remove()
 					}
 				});
+			});
 		}
 	});
 
@@ -105,17 +107,20 @@ var uttGameLogic = function(socket, username, templates, onLoadChat)
 		return false;
 	}
 
-	var placeXImage = function(big, mini)
+	var placeXImage = function(big, mini, callback)
 	{
-		positionImage($(templates.xImage()), big, mini);
+		var img = $(templates.xImage());
+		positionImage(img, big, mini);
+		callback(img);
 	}
 
 	var placeOImage = function(big, mini)
 	{
-		positionImage($(templates.oImage()), big, mini);
+		var img = $(templates.oImage());
+		positionImage(img, big, mini);
 	}
 
-	var positionImage = function(img, big, mini)
+	var positionImage = function(img, big, mini, callback)
 	{
 		var leftMargin;
 		var topMargin;

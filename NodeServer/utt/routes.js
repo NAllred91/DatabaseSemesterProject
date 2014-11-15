@@ -14,56 +14,19 @@
 
 		app.get('/utt/NonCompleteGames/:username', function(req, res)
 		{
-			// db.collection('games').find(
-			// {
-			// 	$or: [
-			// 	{
-			// 		to: req.params.username
-			// 	},
-			// 	{
-			// 		from: req.params.username
-			// 	}],
-
-			// 	$or: [
-			// 	{
-			// 		state: "active"
-			// 	},
-			// 	{
-			// 		state: "pending"
-			// 	}]
-			// },
-			// {
-			// 	state: true,
-			// 	gameId: true,
-			// 	to: true,
-			// 	from: true,
-			// 	lastMoveTime: true,
-			// 	activePlayer: true
-			// })
-			// .toArray(function(err, games)
-			dbHelper.getActiveAndPendingGames(req.params.username, function(err, games)
+			dbHelper.getActiveAndPendingGames(req.params.username, function(games)
 			{
-				if(err)
-				{
-					res.send(500);
-					return;
-				}
-
 				res.send(games);
 			});
 		});
 
 		app.get('/utt/game/:id', function(req, res)
 		{
-			// db.collection('games').findOne(
-			// {
-			// 	gameId: req.params.id
-			// }, function(err, game)
-			dbHelper.getGameData(req.params.id, function(err, game)
+			dbHelper.getGameData(req.params.id, function(game)
 			{
-				if(err)
+				if(!game)
 				{
-					res.send(500);
+					res.sendStatus(400);
 				}
 				else
 				{
@@ -76,7 +39,6 @@
 		{
 			dbHelper.getChatRoomLog(function(log)
 			{
-				console.log(log)
 				res.send(log);
 			});
 		});
@@ -242,15 +204,11 @@
 
 			socket.on('updateGame', function(gameId, big, mini, callback)
 			{
-				// db.collection('games').findOne(
-				// {
-				// 	gameId: gameId
-				// }, function(err, game)
-				dbHelper.getGameData(gameId, function(err, game)
+				dbHelper.getGameData(gameId, function(game)
 				{
-					if(err)
+					if(!game)
 					{
-						callback(err);
+						callback(new Error("Game Not Found"));
 						return;
 					}
 
@@ -309,8 +267,10 @@
 						// 		draw: draw
 						// 	}
 						// }, function(err)
-						dbHelper.updateGame(name, gameId, board, playableGrid, state, wonBy, function(err, opponentName)
+						//dbHelper.updateGame(name, gameId, board, playableGrid, state, wonBy, function(err, opponentName)
+						dbHelper.updateGame(null,0,0,0,0,0,function()
 						{
+							var err = 2
 							if(err)
 							{
 								callback(err);

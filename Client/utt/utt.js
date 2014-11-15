@@ -1,9 +1,8 @@
 // Code for the GameRoom view
-var uttView = function(onReady)
+var uttView = function(onReady, socket)
 {
 	var templates = {};
 	var element;
-	var socket = io();
 	var username;
 	var loadGame;
 

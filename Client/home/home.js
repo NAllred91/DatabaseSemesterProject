@@ -59,19 +59,31 @@
 	});
 
 	var socket = io();
+
+	// Redirect to login if the socket disconnects.
+	socket.on('disconnect', function()
+	{
+		location.href="http://localhost:8001"
+	});
+
 	var username;
 	
-	// Retrieve the username
-	$.get('/username', function(res)
-		{
-			username = res.user;
-			socket.emit('identify', username);
-			onReady();
-		});
+	// Wait for the socket to connect
+	socket.on('connect', function()
+	{
+		// Retrieve the username
+		$.get('/username', function(res)
+			{
+				username = res.user;
+				socket.emit('identify', username);
+				onReady();
+			});
+	});
+	
 	
 
 	// Load the various application views.
-	var uttElement = uttView(onReady);
+	var uttElement = uttView(onReady, socket);
 	
 
 }())
