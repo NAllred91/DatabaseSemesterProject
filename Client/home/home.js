@@ -58,6 +58,7 @@
 		});
 	});
 
+	var username;
 	var socket = io();
 
 	// Redirect to login if the socket disconnects.
@@ -65,8 +66,6 @@
 	{
 		location.href="http://localhost:8001"
 	});
-
-	var username;
 	
 	// Wait for the socket to connect
 	socket.on('connect', function()

@@ -45,10 +45,10 @@
 
 		io.on('connection', function(socket)
 		{	
+
 			// Try for 5 seconds to get access to the restricted sockets.
 			// If a username doesn't appear in the idMap by then, disconnect
-			// the socket.
-			var count = 0		
+			// the socket.	
 			var getAccess = function(count)
 			{
 				if(count > 5)
@@ -56,7 +56,14 @@
 					socket.disconnect();
 					return;
 				}
-				var username = _.invert(idMap)[socket.id];
+
+				var username = _.invert(idMap)[
+					_.find(idMap, function(socketArray)
+					{
+						return _.contains(socketArray, socket.id);
+					})
+				];
+
 				if(username)
 				{
 					restrictedSocket(socket, username);
@@ -70,7 +77,7 @@
 				}	
 			}
 
-			getAccess(count);	
+			getAccess(0);	
 		});
 
 		// These can only be used once the user name for the socket
@@ -88,18 +95,29 @@
 					});
 			});
 
-			socket.on('requestGame', function(user)
+			socket.on('requestGame', function(opponentName)
 			{
-				dbHelper.addNewGame(name, user, newBoard(), function(gameId)
+				dbHelper.addNewGame(name, opponentName, newBoard(), function(gameId)
 				{
 					if(gameId)
 					{
-						var opponentId = idMap[user];
-						if(io.sockets.connected[opponentId])
+						var myIds = idMap[name];
+						_.each(myIds, function(myId)
 						{
-							io.sockets.connected[opponentId].emit('gameRequested', name, gameId);
-							socket.emit('gameWaiting', user, gameId);
-						}
+							if(io.sockets.connected[myId])
+							{
+								io.sockets.connected[myId].emit('gameWaiting', opponentName, gameId);
+							}	
+						});
+						
+						var opponentIds = idMap[opponentName];
+						_.each(opponentIds, function(opponentId)
+						{
+							if(io.sockets.connected[opponentId])
+							{
+								io.sockets.connected[opponentId].emit('gameRequested', name, gameId);
+							}
+						});
 					}
 				});	
 			});
@@ -118,14 +136,25 @@
 							lastMoveTime: now
 						}
 
-						if(io.sockets.connected[opponentId])
-						{
-							gameInfo.opponent = name;
-							io.sockets.connected[opponentId].emit('gameStarted', gameInfo)
-						}
-						
+						var myIds = idMap[name];
 						gameInfo.opponent = opponentName;
-						socket.emit('gameStarted', gameInfo)
+						_.each(myIds, function(myId)
+						{
+							if(io.sockets.connected[myId])
+							{
+								io.sockets.connected[myId].emit('gameStarted', gameInfo);
+							}	
+						});
+						
+						var opponentIds = idMap[opponentName];
+						gameInfo.opponent = name;
+						_.each(opponentIds, function(opponentId)
+						{
+							if(io.sockets.connected[opponentId])
+							{
+								io.sockets.connected[opponentId].emit('gameStarted', gameInfo);
+							}
+						});
 					}
 				});	
 			});
@@ -136,16 +165,23 @@
 				{
 					if(opponentName)
 					{
-						var opponentId = idMap[opponentName];
-						if(io.sockets.connected[opponentId])
+						var myIds = idMap[name];
+						_.each(myIds, function(myId)
 						{
-							io.sockets.connected[opponentId].emit('gameRemoved', gameId);
-						}
-
-						if(io.sockets.connected[idMap[name]])
+							if(io.sockets.connected[myId])
+							{
+								io.sockets.connected[myId].emit('gameRemoved', gameId);
+							}	
+						});
+						
+						var opponentIds = idMap[opponentName];
+						_.each(opponentIds, function(opponentId)
 						{
-							io.sockets.connected[idMap[name]].emit('gameRemoved', gameId);
-						}
+							if(io.sockets.connected[opponentId])
+							{
+								io.sockets.connected[opponentId].emit('gameRemoved', gameId);
+							}
+						});
 					}	
 				});		
 			});
@@ -182,22 +218,22 @@
 				{
 					if(!err)
 					{
-						io.emit(gameId, {
-							gameId: gameId,
-							state: "complete",
-							wonBy: name
-						});
+						// io.emit(gameId, {
+						// 	gameId: gameId,
+						// 	state: "complete",
+						// 	wonBy: name
+						// });
 
-						var oponnentId = idMap[opponentName]
-						if(io.sockets.connected[opponentName])
-						{
-							io.sockets.connected[opponentName].emit('gameRemoved', gameId);
-						}
+						// var oponnentId = idMap[opponentName]
+						// if(io.sockets.connected[opponentName])
+						// {
+						// 	io.sockets.connected[opponentName].emit('gameRemoved', gameId);
+						// }
 
-						if(io.sockets.connected[idMap[name]])
-						{
-							io.sockets.connected[idMap[name]].emit('gameRemoved', gameId);
-						}
+						// if(io.sockets.connected[idMap[name]])
+						// {
+						// 	io.sockets.connected[idMap[name]].emit('gameRemoved', gameId);
+						// }
 					}
 				});
 			});

@@ -122,6 +122,7 @@ var uttChatRoom = function(socket, username, templates, onLoadGame)
 
 	socket.on('gameWaiting', function(user, gameId)
 	{
+		console.log("message")
 		element.find('#pendingGamesScrollArea').append(templates.waitingGame(
 						{
 							user: user, 

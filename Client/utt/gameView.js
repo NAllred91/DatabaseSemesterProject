@@ -212,7 +212,7 @@ var uttGameLogic = function(socket, username, templates, onLoadChat)
 			element.find('#turnIndicator').empty();
 			element.find('#turnIndicator').append('Your Turn!');
 		}
-		if(data.waitingPlayer === username)
+		else
 		{
 			element.find('#turnIndicator').empty();
 			element.find('#turnIndicator').append('Waiting for ' + data.activePlayer + ' to go');
