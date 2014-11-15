@@ -1,9 +1,34 @@
 (function(){
 
 	var _ = require('underscore');
+	var uuid = require('uuid-v4');
 
 	var databaseInterface = function(db){
 		this.db = db;
+	}
+
+	var getMySQLTimeStamp = function()
+	{
+		return new Date().toISOString().slice(0, 19).replace('T', ' ');
+	}
+
+	var getPlayers = function(db, gameId, callback)
+	{
+		var queryTemplate = _.template("SELECT challenger, challengee FROM Games WHERE gameId = '<%= gameId %>'");
+
+		var databaseCall = queryTemplate(
+		{
+			gameId: gameId
+		});
+
+		db.query(databaseCall, function(err, results)
+		{
+			if(err)
+			{
+				console.log("Database Error: Getting game players failed.. ", err);
+			}
+			callback(results[0] || {});
+		});
 	}
 
 	databaseInterface.prototype.validateUser = function(userName, password, callback)
@@ -22,7 +47,7 @@
 		{
 			if(err)
 			{
-				console.log("Database Error: User validation failed.. ",err);
+				console.log("Database Error: User validation failed.. ", err);
 				callback();
 			}
 			else
@@ -40,7 +65,7 @@
 		});
 	}
 
-	databaseInterface.prototype.removeUserConnection = function(userName, callback)
+	databaseInterface.prototype.removeUserConnection = function(userName)
 	{
 		var db = this.db;
 
@@ -51,13 +76,16 @@
 			userName: userName
 		});
 
-		db.query(databaseCall, function(err, rows, fields)
+		db.query(databaseCall, function(err)
 		{
-			console.log(err,rows,fields);
+			if(err)
+				{
+					console.log("Database Error: Removing user connection failed.. ", err);
+				}
 		});
 	}
 
-	databaseInterface.prototype.addUserConnection = function(userName, callback)
+	databaseInterface.prototype.addUserConnection = function(userName)
 	{
 		var db = this.db;
 
@@ -70,11 +98,14 @@
 
 		db.query(databaseCall, function(err, rows, fields)
 		{
-			console.log(err,rows,fields);
+			if(err)
+				{
+					console.log("Database Error: Adding user connection failed.. ", err);
+				}
 		});
 	}
 
-	databaseInterface.prototype.registerUser = function(userName, password, callback)
+	databaseInterface.prototype.registerUser = function(userName, password)
 	{
 		var db = this.db;
 
@@ -86,15 +117,11 @@
 			password: password
 		});
 
-		db.query(databaseCall, function(err, rows, fields)
+		db.query(databaseCall, function(err)
 		{
 			if(err)
 			{
-				callback(err.code);
-			}
-			else
-			{
-				callback();
+				console.log("Database Error: connectionCount reset failed.. ", err);
 			}		
 		});
 	}
@@ -109,7 +136,7 @@
 		{
 			if(err)
 			{
-				console.log("Database Error: Getting online user list failed..",err);
+				console.log("Database Error: Getting online user list failed.. ",err);
 				callback([]);
 			}
 			else
@@ -132,7 +159,10 @@
 
 		db.query(databaseCall, function(err)
 		{
-			callback(err);
+			if(err)
+			{
+				console.log("Database Error: Reseting connection count failed..", err);
+			}
 		});
 	}
 
@@ -190,34 +220,121 @@
 		{
 			username: username,
 			message: message,
-			now: new Date().toISOString().slice(0, 19).replace('T', ' ')
+			now: getMySQLTimeStamp()
 		});
 
 		db.query(databaseCall, function(err)
 		{
 			if(err)
 			{
-				console.log("Database Error: Adding chat room message failed...", err);
+				console.log("Database Error: Adding chat room message failed.. ", err);
 			}
 		});
 	}
 
-	databaseInterface.prototype.addNewGame = function(waitingPlayer, activePlayer, callback)
+	databaseInterface.prototype.addNewGame = function(challenger, challengee, board, callback)
 	{
 		var db = this.db;
-		callback();
+		var gameBoard = JSON.stringify(board).replace(/"/g, '\\"');
+		var gameId = uuid();
+
+		var queryTemplate = _.template('INSERT INTO Games (gameId, board, challenger, challengee, state) VALUES("<%= gameId %>", "<%= gameBoard %>", "<%= challenger %>", "<%= challengee %>", "pending")');
+
+		var databaseCall = queryTemplate(
+		{
+			challenger: challenger,
+			challengee: challengee,
+			gameId: gameId,
+			gameBoard: gameBoard,
+		});
+
+		db.query(databaseCall, function(err)
+		{
+			if(err)
+			{
+				console.log("Database Error: Adding new game failed.. ", err);
+				callback();
+			}
+			else
+			{
+				callback(gameId);
+			}
+		});
 	}
 
 	databaseInterface.prototype.acceptGame = function(username, gameId, callback)
 	{
 		var db = this.db;
-		callback();
+		var now = getMySQLTimeStamp();
+
+		var queryTemplate = _.template("UPDATE Games SET state = 'active', playableGrid = 0, activePlayer = '<%= activePlayer %>', startTime = '<%= now %>' WHERE gameId = '<%= gameId %>'");
+
+		var databaseCall = queryTemplate(
+		{
+			activePlayer: username,
+			gameId: gameId,
+			now: now
+		});
+
+		getPlayers(db, gameId, function(players)
+			{
+				var opponentName = 	_.without(_.values(players), username)
+				 if(opponentName.length === 1)
+				 {
+				 	db.query(databaseCall, function(err)
+					{
+						if(err)
+						{
+							console.log("Database Error: Accepting game failed.. ", err);
+							callback();
+						}
+						else
+						{
+							callback(opponentName[0], now);
+						}
+					});
+				 }
+				 else
+				 {
+				 	callback();
+				 }
+			});
 	}
 
 	databaseInterface.prototype.rejectGame = function(username, gameId, callback)
 	{
 		var db = this.db;
-		callback();
+
+		var queryTemplate = _.template("DELETE FROM Games WHERE gameId = '<%= gameId %>' AND state = 'pending'");
+
+		var databaseCall = queryTemplate(
+		{
+			gameId: gameId
+		});
+		
+		getPlayers(db, gameId, function(players)
+			{
+				var opponentName = 	_.without(_.values(players), username)
+				if(opponentName.length === 1)
+				{
+					db.query(databaseCall, function(err, result)
+					{
+						if(err)
+						{
+							console.log("Database Error: Rejecting game failed.. ", err);
+							callback();
+						}
+						else
+						{
+							callback(opponentName[0]);
+						}
+					});
+				}
+				else
+				{
+					callback();
+				}
+			});
 	}
 
 	databaseInterface.prototype.updateGame = function(username, gameId, board, playableGrid, state, wonBy, callback)

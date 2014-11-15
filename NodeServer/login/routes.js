@@ -14,12 +14,12 @@
 			// Under normal use of the website this will be suffecient. 
 			socket.on('identify', function(username)
 			{
-				idMap[socket.id] = username;
+				idMap[username] = socket.id;
 				dbHelper.addUserConnection(username);
 				socket.on('disconnect', function()
 				{
 					dbHelper.removeUserConnection(username);
-					delete idMap[socket.id]
+					delete idMap[username]
 				});
 			});		
 		});

@@ -19,7 +19,7 @@
 					socket.disconnect();
 					return;
 				}
-				var username = idMap[socket.id];
+				var username = _.invert(idMap)[socket.id];
 				if(username)
 				{
 					restrictedSocket(socket, username);

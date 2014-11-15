@@ -94,7 +94,7 @@
 					socket.disconnect();
 					return;
 				}
-				var username = idMap[socket.id];
+				var username = _.invert(idMap)[socket.id];
 				if(username)
 				{
 					restrictedSocket(socket, username);
@@ -115,16 +115,8 @@
 		// has been given.
 		var restrictedSocket = function(socket, name)
 		{
-			console.log("restricted: " + name)
-
 			socket.on('chatMessage', function(msg)
 			{
-				// db.collection('messages').insert(
-				// {
-				// 	message: msg,
-				// 	user: map.name,
-				// 	time: new Date()
-				// },function(){});
 				dbHelper.addChatRoomMessage(name, msg);
 
 				io.emit('chatMessage', 
@@ -136,23 +128,15 @@
 
 			socket.on('requestGame', function(user)
 			{
-				// db.collection('games').insert(
-				// {
-				// 	from: name,
-				// 	to: user,
-				// 	date: new Date(),
-				// 	gameId: id,
-				// 	state: "pending"
-				// }, function(err)
-				dbHelper.addNewGame(name, user, function(err, id)
+				dbHelper.addNewGame(name, user, newBoard(), function(gameId)
 				{
-					if(!err)
+					if(gameId)
 					{
 						var opponentId = idMap[user];
 						if(io.sockets.connected[opponentId])
 						{
-							io.sockets.connected[opponentId].emit('gameRequested', name, id);
-							socket.emit('gameWaiting', user, id);
+							io.sockets.connected[opponentId].emit('gameRequested', name, gameId);
+							socket.emit('gameWaiting', user, gameId);
 						}
 					}
 				});	
@@ -160,45 +144,22 @@
 
 			socket.on('acceptGame', function(gameId)
 			{
-				// db.collection('games').findOne(
-				// {
-				// 	gameId: gameId
-				// }, function(err, game)
-				// {
-				// 	if(!err && game)
-				// 	{
-				// 		var now = new Date().getTime();
-
-				// 		db.collection('games').update(
-				// 		{
-				// 			gameId: gameId
-				// 		},
-				// 		{
-				// 			$set: {
-				// 				state: "active",
-				// 				activePlayer: game.from,
-				// 				waitingPlayer: game.to,
-				// 				board: newBoard(),
-				// 				playableGrid: 5,
-				// 				lastMoveTime: now
-				// 			}
-				// 		}, function(err, updated)
-				dbHelper.acceptGame(name, gameId, function(err, opponentName)
+				dbHelper.acceptGame(name, gameId, function(opponentName, now)
 				{
-					if(!err)
+					if(opponentName)
 					{
 						var opponentId = idMap[opponentName];
 						var gameInfo =
 						{
 							gameId: gameId,
-							activePlayer: opponenetName,
+							activePlayer: opponentName,
 							lastMoveTime: now
 						}
 
 						if(io.sockets.connected[opponentId])
 						{
 							gameInfo.opponent = name;
-							io.sockets.connected[oponnentId].emit('gameStarted', gameInfo)
+							io.sockets.connected[opponentId].emit('gameStarted', gameInfo)
 						}
 						
 						gameInfo.opponent = opponentName;
@@ -209,23 +170,21 @@
 
 			socket.on('rejectGame', function(gameId)
 			{
-				// db.collection('games').findOne(
-				// {
-				// 	gameId: gameId
-				// },
-				dbHelper.rejectGame(name, gameId, function(err, opponentName)
+				dbHelper.rejectGame(name, gameId, function(opponentName)
 				{
-
-					var oponnentId = idMap[opponentName]
-					if(io.sockets.connected[opponentName])
+					if(opponentName)
 					{
-						io.sockets.connected[opponentName].emit('gameRemoved', gameId);
-					}
+						var opponentId = idMap[opponentName];
+						if(io.sockets.connected[opponentId])
+						{
+							io.sockets.connected[opponentId].emit('gameRemoved', gameId);
+						}
 
-					if(io.sockets.connected[idMap[name]])
-					{
-						io.sockets.connected[idMap[name]].emit('gameRemoved', gameId);
-					}
+						if(io.sockets.connected[idMap[name]])
+						{
+							io.sockets.connected[idMap[name]].emit('gameRemoved', gameId);
+						}
+					}	
 				});		
 			});
 
@@ -380,7 +339,7 @@
 								});
 							}
 
-							if(map && io.sockets.connected[idMap[name]])
+							if(io.sockets.connected[idMap[name]])
 							{
 								io.sockets.connected[idMap[name]].emit('setTurn', activePlayer, gameId);
 							}

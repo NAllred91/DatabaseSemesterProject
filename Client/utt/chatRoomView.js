@@ -108,7 +108,6 @@ var uttChatRoom = function(socket, username, templates, onLoadGame)
 
 	socket.on('onlineUsers', function(users)
 	{
-		console.log(users)
 		updateUserList(users)
 	});
 
