@@ -78,6 +78,18 @@
 	background-color: rgb(236, 149, 138);
 }
 
+.boardContainer .chatArea
+{
+	width: 100%;
+	margin-top: 10%;
+	margin-left: 0%;
+}
+
+.boardContainer .chatArea .scrollArea
+{
+	height: 14vw;
+}
+
 .chatArea .scrollArea
 {
 	height: 30vw;
@@ -110,6 +122,11 @@
 	width: 63%;
 	margin-left: 2%;
 	margin-top: 1%;
+}
+
+.boardContainer .typeArea
+{
+	width: 85%;
 }
 
 .submitButton

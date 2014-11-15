@@ -103,7 +103,7 @@ var uttChatRoom = function(socket, username, templates, onLoadGame)
 				message: msg.message
 			}));
 
-		element.find('#chatScrollArea').scrollTop(element.find('#chatScrollArea')[0].scrollHeight)
+		element.find('#chatScrollArea').scrollTop(element.find('#chatScrollArea')[0].scrollHeight);
 	});
 
 	socket.on('onlineUsers', function(users)

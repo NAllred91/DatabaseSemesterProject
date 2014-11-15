@@ -35,6 +35,14 @@
 			});
 		});
 
+		app.get('/utt/gameChatLog/:id', function(req, res)
+		{
+			dbHelper.getGameChatLog(req.params.id, function(log)
+			{
+				res.send(log);
+			});
+		});
+
 		app.get('/utt/chatRoomLog', function(req, res)
 		{
 			dbHelper.getChatRoomLog(function(log)
@@ -84,6 +92,16 @@
 		// has been given.
 		var restrictedSocket = function(socket, name)
 		{
+			socket.on('subscribe', function(room)
+			{
+				socket.join(room);
+			});
+
+			socket.on('unsubscribe', function(room)
+			{
+				socket.leave(room);
+			});
+
 			socket.on('chatMessage', function(msg)
 			{
 				dbHelper.addChatRoomMessage(name, msg);
@@ -93,6 +111,13 @@
 						message: msg,
 						user: name
 					});
+			});
+
+			socket.on('gameChatMessage', function(msg)
+			{
+				dbHelper.addGameChatMessage(name, msg.gameId, msg.message);
+				msg.sender = name;
+				io.sockets.in(msg.gameId).emit("gameChatMessage", msg);
 			});
 
 			socket.on('requestGame', function(opponentName)
@@ -308,22 +333,6 @@
 							opponentName = game.to;
 						}
 
-						// db.collection('games').update(
-						// {
-						// 	gameId: gameId
-						// },
-						// {
-						// 	$set: {
-						// 		board: appliedMove.board,
-						// 		playableGrid: appliedMove.playableGrid,
-						// 		wonBy: wonBy,
-						// 		activePlayer: activePlayer,
-						// 		waitingPlayer: waitingPlayer,
-						// 		state: state,
-						// 		draw: draw
-						// 	}
-						// }, function(err)
-						//dbHelper.updateGame(name, gameId, board, playableGrid, state, wonBy, function(err, opponentName)
 						dbHelper.updateGame(gameId, appliedMove.board, appliedMove.playableGrid, activePlayer, state, wonBy, function(err, now)
 						{
 							if(err)
@@ -333,50 +342,28 @@
 							}
 
 							callback();
-
-							// var opponentId = idMap[opponentName];
-							// if(io.sockets.connected[opponentId])
-							// {
-							// 	io.sockets.connected[opponentId].emit('setTurn', activePlayer, gameId);
-							// 	io.sockets.connected[opponentId].emit(gameId, {
-							// 		activePlayer: activePlayer,
-							// 		board: appliedMove.board,
-							// 		date: game.date,
-							// 		from: game.from,
-							// 		gameId: gameId,
-							// 		playableGrid: appliedMove.playableGrid,
-							// 		state: state,
-							// 		to: game.to,
-							// 		lastMoveTime: new Date().getTime(),
-							// 		wonBy: wonBy,
-							// 		draw: draw
-							// 	});
-							// }
-
-							// if(io.sockets.connected[idMap[name]])
-							// {
-							// 	io.sockets.connected[idMap[name]].emit('setTurn', activePlayer, gameId);
-							// }
-
+							io.sockets.in(gameId).emit("gameUpdate", 
+								{
+									type: "gameUpdate",
+									activePlayer: activePlayer,
+							 		board: appliedMove.board,
+									date: game.date,
+									from: game.from,
+									gameId: gameId,
+									playableGrid: appliedMove.playableGrid,
+									state: state,
+									to: game.to,
+									lastMoveTime: now,
+									wonBy: wonBy,
+							});
 							var myIds = idMap[name];
 							_.each(myIds, function(myId)
 							{
 								if(io.sockets.connected[myId])
 								{
 									io.sockets.connected[myId].emit('setTurn', activePlayer, gameId);
-									io.sockets.connected[myId].emit(gameId, {
-										activePlayer: activePlayer,
-								 		board: appliedMove.board,
-										date: game.date,
-										from: game.from,
-										gameId: gameId,
-										playableGrid: appliedMove.playableGrid,
-										state: state,
-										to: game.to,
-										lastMoveTime: now,
-										wonBy: wonBy,
-									});
-								}	
+								
+							 	}	
 							});
 							
 							var opponentIds = idMap[opponentName];
@@ -385,18 +372,6 @@
 								if(io.sockets.connected[opponentId])
 								{
 									io.sockets.connected[opponentId].emit('setTurn', activePlayer, gameId);
-									io.sockets.connected[opponentId].emit(gameId, {
-										activePlayer: activePlayer,
-								 		board: appliedMove.board,
-										date: game.date,
-										from: game.from,
-										gameId: gameId,
-										playableGrid: appliedMove.playableGrid,
-										state: state,
-										to: game.to,
-										lastMoveTime: now,
-										wonBy: wonBy,
-									});
 								}
 							});
 						});

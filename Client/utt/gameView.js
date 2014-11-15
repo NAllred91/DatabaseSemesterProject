@@ -16,6 +16,27 @@ var uttGameLogic = function(socket, username, templates, onLoadChat)
 		socket.emit('claimVictory', gameData.gameId)
 	});
 
+	$('body').on('click','#gameChatSubmitButton', function(event)
+	{
+		var message = {
+			gameId: gameData.gameId,
+			message: $("#gameMessage").val()
+		}
+		$('#gameMessage').val("");
+		if(message.message.length > 0)
+		{
+			socket.emit("gameChatMessage", message);
+		}
+	});
+
+	$('body').on('keyup', '#gameMessage', function(event)
+	{
+		if(event.which === 13)
+		{
+			$('#gameChatSubmitButton').trigger('click');
+		}
+	});
+
 	$('body').on('click', '.board', function(event)
 	{
 		var xPosition = event.offsetX;
@@ -195,8 +216,35 @@ var uttGameLogic = function(socket, username, templates, onLoadChat)
 		{
 			element.find(gridMap[playableGrid]).css('background-color', 'orange');
 		}
-
 	}
+
+	var incomingChatMessage = function(msg)
+	{
+		console.log(msg)
+		var addMessage = function(message)
+		{
+			element.find("#gameChatScrollArea").append(templates.chatMessage(
+			{
+				user: message.sender,
+				message: message.message
+			}));
+			element.find('#gameChatScrollArea').scrollTop(element.find('#gameChatScrollArea')[0].scrollHeight);
+		}
+
+		if(_.isArray(msg))
+		{
+			console.log("IS ARRAY!")
+			_.each(msg, function(message)
+			{
+				addMessage(message);
+			});
+		}
+		else
+		{
+			addMessage(msg);
+		}
+	}
+		
 
 	var incomingData = function(data)
 	{	
@@ -273,21 +321,28 @@ var uttGameLogic = function(socket, username, templates, onLoadChat)
 	var loadGame = function(gameId)
 	{
 		$.get('/utt/game/' + gameId, function(data)
+		{
+			if(data)
 			{
-				if(data)
+				gameData = data;
+				socket.emit("subscribe", gameId);
+				if(previousListener)
 				{
-					gameData = data;
-					if(previousListener)
-					{
-						socket.removeAllListeners(previousListener);
-					}
-
-					socket.on(data.gameId, incomingData);
-					previousListener = data.gameId;
-
-					incomingData(data);
+					socket.emit("unsubscribe", previousListener);
 				}
-			});
+				socket.on("gameChatMessage", incomingChatMessage);
+				socket.on("gameUpdate", incomingData);
+				previousListener = data.gameId;
+
+				incomingData(data);
+			}
+		});
+
+		$.get('/utt/gameChatLog/' + gameId, function(log)
+		{
+			incomingChatMessage(log);
+		});
+
 		return element;
 	};
 

@@ -243,7 +243,7 @@
 	{
 		var db = this.db;
 
-		var databaseCall = "SELECT message, sender FROM Messages WHERE recipient is NULL ORDER BY timeSent ASC";
+		var databaseCall = "SELECT message, sender FROM Messages WHERE gameId is NULL ORDER BY timeSent ASC";
 
 		db.query(databaseCall, function(err, messages)
 		{
@@ -262,7 +262,26 @@
 	databaseInterface.prototype.getGameChatLog = function(gameId, callback)
 	{
 		var db = this.db;
-		callback();
+
+		var databaseQuery = _.template("SELECT message, sender FROM Messages WHERE gameId = '<%= gameId %>' ORDER BY timeSent ASC");
+
+		var databaseCall = databaseQuery(
+		{
+			gameId: gameId
+		});
+
+		db.query(databaseCall, function(err, messages)
+		{
+			if(err)
+			{
+				console.log("Database Error: Getting game chat logs failed.. ", err);
+				callback([]);
+			}
+			else
+			{
+				callback(messages);
+			}
+		});
 	}
 
 	databaseInterface.prototype.addChatRoomMessage = function(username, message)
@@ -283,6 +302,29 @@
 			if(err)
 			{
 				console.log("Database Error: Adding chat room message failed.. ", err);
+			}
+		});
+	}
+
+	databaseInterface.prototype.addGameChatMessage = function(username, gameId, message)
+	{
+		var db = this.db;
+
+		var queryTemplate = _.template("INSERT INTO Messages (message, timeSent, sender, gameId) VALUES ('<%= message %>', '<%= now %>', '<%= username %>', '<%= gameId %>')");
+
+		var databaseCall = queryTemplate(
+		{
+			username: username,
+			message: message,
+			gameId: gameId,
+			now: getMySQLTimeStamp()
+		});
+
+		db.query(databaseCall, function(err)
+		{
+			if(err)
+			{
+				console.log("Database Error: Adding game chat message failed.. ", err);
 			}
 		});
 	}
