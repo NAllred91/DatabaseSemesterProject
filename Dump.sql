@@ -25,19 +25,22 @@ DROP TABLE IF EXISTS `Games`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Games` (
-  `gameId` varchar(30) NOT NULL,
-  `board` tinyblob NOT NULL,
-  `startTime` datetime NOT NULL,
-  `endTime` datetime DEFAULT NULL,
-  `waitingPlayer` varchar(15) NOT NULL,
-  `activePlayer` varchar(15) NOT NULL,
+  `gameId` varchar(36) NOT NULL,
+  `board` text NOT NULL,
+  `startTime` datetime DEFAULT NULL,
+  `challenger` varchar(15) DEFAULT NULL,
+  `challengee` varchar(15) DEFAULT NULL,
   `winner` varchar(15) DEFAULT NULL,
-  `lastMoveTime` datetime NOT NULL,
+  `lastMoveTime` datetime DEFAULT NULL,
+  `playableGrid` int(10) unsigned DEFAULT NULL,
+  `state` varchar(15) NOT NULL,
+  `activePlayer` varchar(15) DEFAULT NULL,
   PRIMARY KEY (`gameId`),
-  KEY `playerOne_idx` (`waitingPlayer`),
-  KEY `playerTwo_idx` (`activePlayer`),
-  CONSTRAINT `playerOne` FOREIGN KEY (`waitingPlayer`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `playerTwo` FOREIGN KEY (`activePlayer`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  UNIQUE KEY `gameId_UNIQUE` (`gameId`),
+  KEY `playerOne_idx` (`challenger`),
+  KEY `playerTwo_idx` (`challengee`),
+  CONSTRAINT `playerOne` FOREIGN KEY (`challenger`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `playerTwo` FOREIGN KEY (`challengee`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -143,4 +146,4 @@ CREATE TABLE `Users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-11-13 22:36:46
+-- Dump completed on 2014-11-15  1:15:15
