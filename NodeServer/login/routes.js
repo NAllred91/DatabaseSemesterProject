@@ -21,7 +21,10 @@
 				{
 					dbHelper.removeUserConnection(username);
 					idMap[username] = _.without(idMap[username], socket.id);
-					console.log(idMap)
+					if(idMap[username].length === 0)
+					{
+						delete idMap[username];
+					}
 				});
 			});		
 		});
@@ -54,6 +57,7 @@
 				else
 				{
 					req.session.user = correctCaseName;
+					req.session.cookie.maxAge = 30000;
 					res.redirect('/home.html');
 				}
 			});                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
@@ -87,7 +91,6 @@
 			dbHelper.registerUser(username, password,
 				function(err)
 				{
-					console.log(err)
 					if(err === "ER_DUP_ENTRY")
 					{
 						res.sendStatus(409);
@@ -106,7 +109,6 @@
 		// Listen for users signing out.
 		app.post('/signOut', function(req, res)
 		{
-			console.log(req.session)
 			if(req.session)
 			{
 				req.session.user = undefined;
@@ -118,6 +120,21 @@
 		app.use(express.static(__dirname + '/../../Client/login'));
 		app.use(express.static(__dirname + '/../../Client/images'));
 		app.use(express.static(__dirname + '/../../Client/modules'));
+
+		// Use a ping to reset the max age of the cookie.
+		app.get('/ping', function(req, res)
+		{
+			if(req.session && req.session.user)
+			{
+				req.session._garbage = Date();
+				req.session.touch();
+				res.sendStatus(200);
+			}
+			else
+			{
+				res.sendStatus(401);
+			}
+		});
 
 		// Beyond this point, all users must be logged in.
 		app.all('*', function(req, res, next)

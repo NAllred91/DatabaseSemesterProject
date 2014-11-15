@@ -392,10 +392,45 @@
 			});
 	}
 
-	databaseInterface.prototype.updateGame = function(username, gameId, board, playableGrid, state, wonBy, callback)
+	databaseInterface.prototype.updateGame = function(gameId, board, playableGrid, activePlayer, state, wonBy, callback)
 	{
 		var db = this.db;
-		callback();
+		var gameBoard = JSON.stringify(board).replace(/"/g, '\\"');
+		var now = getMySQLTimeStamp();
+
+		var queryTemplate = _.template("UPDATE Games SET board = '<%= gameBoard %>', playableGrid = '<%= playableGrid %>', activePlayer = '<%= activePlayer %>', state = '<%= state %>', wonBy = '<%= wonBy %>', lastMoveTime = '<%= now %>' WHERE gameId = '<%= gameId %>'");
+		
+		var databaseCall = queryTemplate(
+		{
+			gameId: gameId,
+			gameBoard: gameBoard,
+			playableGrid: playableGrid,
+			activePlayer: activePlayer,
+			state: state,
+			wonBy: wonBy,
+			now: now
+		});
+
+		db.query(databaseCall, function(err, result)
+		{
+			if(err)
+			{
+				console.log("Database Error: Updating a game failed..", err);
+				callback(err);
+			}
+			else if(result.affectedRows === 0)
+			{
+				callback(new Error("Game Id not found."));
+			}
+			else if(result.affectedRows > 1)
+			{
+				callback(new Error("Multiple games with same Id"));
+			}
+			else
+			{
+				callback(null, now);
+			}
+		});
 	}
 	module.exports = databaseInterface;
 }());

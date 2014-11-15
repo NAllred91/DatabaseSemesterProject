@@ -1,5 +1,8 @@
 (function()
 {
+	// The main url for the site.
+	var baseURL = "http://localhost:8001";
+
 	// Wait for all the applications to be ready,
 	// and wait for the DOM to be ready.
 	var onReady = _.after(2, function(){
@@ -64,7 +67,7 @@
 	// Redirect to login if the socket disconnects.
 	socket.on('disconnect', function()
 	{
-		location.href="http://localhost:8001"
+		location.href= baseURL;
 	});
 	
 	// Wait for the socket to connect
@@ -78,7 +81,24 @@
 				onReady();
 			});
 	});
-	
+
+	// Start pinging to prevent our session cookie from timing out.
+	var ping = function()
+	{
+		$.get('/ping', function()
+		{
+			_.delay(function()
+			{
+				ping();
+			},25000)
+		})
+		.fail(function()
+		{
+			location.href= baseURL;
+		});
+	}
+
+	ping();
 	
 
 	// Load the various application views.

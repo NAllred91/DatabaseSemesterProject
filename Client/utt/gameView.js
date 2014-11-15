@@ -62,7 +62,6 @@ var uttGameLogic = function(socket, username, templates, onLoadChat)
 
 		if(validateMove(bigGrid, miniGrid))
 		{
-			//TODO place image then if error remove image.
 			placeXImage(bigGrid, miniGrid, function(img)
 			{
 				socket.emit('updateGame', gameData.gameId, bigGrid, miniGrid,
@@ -170,7 +169,7 @@ var uttGameLogic = function(socket, username, templates, onLoadChat)
 			{
 				if(move === username)
 				{
-					placeXImage(big, mini);
+					placeXImage(big, mini, _.noop);
 				}
 				else if(move)
 				{
@@ -200,8 +199,9 @@ var uttGameLogic = function(socket, username, templates, onLoadChat)
 	}
 
 	var incomingData = function(data)
-	{
+	{	
 		gameData = data;
+		console.log(data)
 		if(new Date().getTime() - data.lastMoveTime < 86400000 || data.activePlayer === username)
 		{
 			//TODO inverse....
@@ -234,7 +234,7 @@ var uttGameLogic = function(socket, username, templates, onLoadChat)
 				element.find('#turnIndicator').empty();
 				element.find('#turnIndicator').append('You beat ' + opponent + '!');
 			}
-			else if(data.draw === true)
+			else if(!data.wonBy)
 			{
 				element.find('#turnIndicator').empty();
 				element.find('#turnIndicator').append('The game was a draw!');

@@ -132,7 +132,7 @@
 						var gameInfo =
 						{
 							gameId: gameId,
-							activePlayer: opponentName,
+							activePlayer: name,
 							lastMoveTime: now
 						}
 
@@ -266,7 +266,7 @@
 					{
 						var appliedMove = applyMove(game.board, big, mini, name);
 						var wonBy = bigVictoryCheck(appliedMove.board);
-						var draw 
+						var draw;
 						if(!wonBy)
 						{
 							draw = bigDrawCheck(appliedMove.board);
@@ -277,15 +277,35 @@
 						}
 						
 						var activePlayer;
-						var waitingPlayer;
+						var opponentName;
 						var state = "complete";
+						var now = new Date().getTime()
 
 						// If no one won, switch the players.
 						if(!wonBy && !draw)
 						{
-							activePlayer = game.waitingPlayer;
-							waitingPlayer = game.activePlayer;
+							if(game.activePlayer === game.to)
+							{
+								activePlayer = game.from;
+							}
+							else if(game.activePlayer === game.from)
+							{
+								activePlayer = game.to;
+							}
+							else
+							{
+								callback(new Error("Bad Data..."));
+							}
 							state = "active";
+						}
+
+						if(game.to === name)
+						{
+							opponentName = game.from;
+						}
+						else if(game.from === name)
+						{
+							opponentName = game.to;
 						}
 
 						// db.collection('games').update(
@@ -304,9 +324,8 @@
 						// 	}
 						// }, function(err)
 						//dbHelper.updateGame(name, gameId, board, playableGrid, state, wonBy, function(err, opponentName)
-						dbHelper.updateGame(null,0,0,0,0,0,function()
+						dbHelper.updateGame(gameId, appliedMove.board, appliedMove.playableGrid, activePlayer, state, wonBy, function(err, now)
 						{
-							var err = 2
 							if(err)
 							{
 								callback(err);
@@ -315,30 +334,71 @@
 
 							callback();
 
-							var opponentId = idMap[opponentName];
-							if(io.sockets.connected[opponentId])
-							{
-								io.sockets.connected[opponentId].emit('setTurn', activePlayer, gameId);
-								io.sockets.connected[opponentId].emit(gameId, {
-									activePlayer: activePlayer,
-									board: appliedMove.board,
-									date: game.date,
-									from: game.from,
-									gameId: gameId,
-									playableGrid: appliedMove.playableGrid,
-									state: state,
-									to: game.to,
-									waitingPlayer: waitingPlayer,
-									lastMoveTime: new Date().getTime(),
-									wonBy: wonBy,
-									draw: draw
-								});
-							}
+							// var opponentId = idMap[opponentName];
+							// if(io.sockets.connected[opponentId])
+							// {
+							// 	io.sockets.connected[opponentId].emit('setTurn', activePlayer, gameId);
+							// 	io.sockets.connected[opponentId].emit(gameId, {
+							// 		activePlayer: activePlayer,
+							// 		board: appliedMove.board,
+							// 		date: game.date,
+							// 		from: game.from,
+							// 		gameId: gameId,
+							// 		playableGrid: appliedMove.playableGrid,
+							// 		state: state,
+							// 		to: game.to,
+							// 		lastMoveTime: new Date().getTime(),
+							// 		wonBy: wonBy,
+							// 		draw: draw
+							// 	});
+							// }
 
-							if(io.sockets.connected[idMap[name]])
+							// if(io.sockets.connected[idMap[name]])
+							// {
+							// 	io.sockets.connected[idMap[name]].emit('setTurn', activePlayer, gameId);
+							// }
+
+							var myIds = idMap[name];
+							_.each(myIds, function(myId)
 							{
-								io.sockets.connected[idMap[name]].emit('setTurn', activePlayer, gameId);
-							}
+								if(io.sockets.connected[myId])
+								{
+									io.sockets.connected[myId].emit('setTurn', activePlayer, gameId);
+									io.sockets.connected[myId].emit(gameId, {
+										activePlayer: activePlayer,
+								 		board: appliedMove.board,
+										date: game.date,
+										from: game.from,
+										gameId: gameId,
+										playableGrid: appliedMove.playableGrid,
+										state: state,
+										to: game.to,
+										lastMoveTime: now,
+										wonBy: wonBy,
+									});
+								}	
+							});
+							
+							var opponentIds = idMap[opponentName];
+							_.each(opponentIds, function(opponentId)
+							{
+								if(io.sockets.connected[opponentId])
+								{
+									io.sockets.connected[opponentId].emit('setTurn', activePlayer, gameId);
+									io.sockets.connected[opponentId].emit(gameId, {
+										activePlayer: activePlayer,
+								 		board: appliedMove.board,
+										date: game.date,
+										from: game.from,
+										gameId: gameId,
+										playableGrid: appliedMove.playableGrid,
+										state: state,
+										to: game.to,
+										lastMoveTime: now,
+										wonBy: wonBy,
+									});
+								}
+							});
 						});
 					}
 					else
@@ -371,165 +431,165 @@
 			return true;
 		}
 
-		var applyMove = function(board, big, mini, user)
+	var applyMove = function(board, big, mini, user)
+	{
+		board[big].moves[mini] = user;
+		board[big].wonBy = littleVictoryCheck(board[big].moves);
+		if(!board[big].wonBy)
 		{
-			board[big].moves[mini] = user;
-			board[big].wonBy = littleVictoryCheck(board[big].moves);
-			if(!board[big].wonBy)
-			{
-				board[big].draw = littleDrawCheck(board[big].moves);
-			}
-			else
-			{
-				board[big].draw = false;
-			}
-			
-			var appliedMove = 
-			{
-				board: board,
-				playableGrid: getPlayableGrid(board, mini)
-			}
-
-			return appliedMove;
+			board[big].draw = littleDrawCheck(board[big].moves);
+		}
+		else
+		{
+			board[big].draw = false;
+		}
+		
+		var appliedMove = 
+		{
+			board: board,
+			playableGrid: getPlayableGrid(board, mini)
 		}
 
-		var getPlayableGrid = function(board, grid)
+		return appliedMove;
+	}
+
+	var getPlayableGrid = function(board, grid)
+	{
+		if(board[grid].wonBy)
 		{
-			if(board[grid].wonBy)
-			{
-				return null;
-			}
-
-			if(
-				board[grid].moves[1]
-				&& board[grid].moves[2]
-				&& board[grid].moves[3]
-				&& board[grid].moves[4] 
-				&& board[grid].moves[5] 
-				&& board[grid].moves[6] 
-				&& board[grid].moves[7]
-				&& board[grid].moves[8]
-				&& board[grid].moves[9])
-			{
-				return null;
-			}
-
-			return grid;
+			return 0;
 		}
 
-		var littleVictoryCheck = function(board)
+		if(
+			board[grid].moves[1]
+			&& board[grid].moves[2]
+			&& board[grid].moves[3]
+			&& board[grid].moves[4] 
+			&& board[grid].moves[5] 
+			&& board[grid].moves[6] 
+			&& board[grid].moves[7]
+			&& board[grid].moves[8]
+			&& board[grid].moves[9])
 		{
-			if(board[1] && board[1] === board[2] && board[2] === board[3])
-			{
-				return board[1];
-			}
-
-			if(board[4] && board[4] === board[5] && board[5] === board[6])
-			{
-				return board[4];
-			}
-
-			if(board[7] && board[7] === board[8] && board[8] === board[9])
-			{
-				return board[7];
-			}
-
-			if(board[1] && board[1] === board[4] && board[4] === board[7])
-			{
-				return board[1];
-			}
-
-			if(board[2] && board[2] === board[5] && board[5] === board[8])
-			{
-				return board[2];
-			}
-
-			if(board[3] && board[3] === board[6] && board[6] === board[9])
-			{
-				return board[3];
-			}
-
-			if(board[1] && board[1] === board[5] && board[5] === board[9])
-			{
-				return board[1];
-			}
-
-			if(board[3] && board[3] === board[5] && board[5] === board[7])
-			{
-				return board[3];
-			}
-
-			return null;
+			return 0;
 		}
 
-		var bigVictoryCheck = function(board)
+		return grid;
+	}
+
+	var littleVictoryCheck = function(board)
+	{
+		if(board[1] && board[1] === board[2] && board[2] === board[3])
 		{
-			if(board[1].wonBy && board[1].wonBy === board[2].wonBy && board[2].wonBy === board[3].wonBy)
-			{
-				return board[1].wonBy;
-			}
-
-			if(board[4].wonBy && board[4].wonBy === board[5].wonBy && board[5].wonBy === board[6].wonBy)
-			{
-				return board[4].wonBy;
-			}
-
-			if(board[7].wonBy && board[7].wonBy === board[8].wonBy && board[8].wonBy === board[9].wonBy)
-			{
-				return board[7].wonBy;
-			}
-
-			if(board[1].wonBy && board[1].wonBy === board[4].wonBy && board[4].wonBy === board[7].wonBy)
-			{
-				return board[1].wonBy;
-			}
-
-			if(board[2].wonBy && board[2].wonBy === board[5].wonBy && board[5].wonBy === board[8].wonBy)
-			{
-				return board[2].wonBy;
-			}
-
-			if(board[3].wonBy && board[3].wonBy === board[6].wonBy && board[6].wonBy === board[9].wonBy)
-			{
-				return board[3].wonBy;
-			}
-
-			if(board[1].wonBy && board[1].wonBy === board[5].wonBy && board[5].wonBy === board[9].wonBy)
-			{
-				return board[1].wonBy;
-			}
-
-			if(board[3].wonBy && board[3].wonBy === board[5].wonBy && board[5].wonBy === board[7].wonBy)
-			{
-				return board[3].wonBy;
-			}
-
-			return null;
+			return board[1];
 		}
 
-		var littleDrawCheck = function(board)
+		if(board[4] && board[4] === board[5] && board[5] === board[6])
 		{
-			var isBoardFull = !_.contains(board, null);
-			return isBoardFull;
+			return board[4];
 		}
 
-		var bigDrawCheck = function(board)
+		if(board[7] && board[7] === board[8] && board[8] === board[9])
 		{
-			var availableMove = _.find(board, function(grid)
-			{
-				if(grid.wonBy || grid.draw)
-				{
-					return false;
-				}
-				return true;
-			})
+			return board[7];
+		}
 
-			if(availableMove)
+		if(board[1] && board[1] === board[4] && board[4] === board[7])
+		{
+			return board[1];
+		}
+
+		if(board[2] && board[2] === board[5] && board[5] === board[8])
+		{
+			return board[2];
+		}
+
+		if(board[3] && board[3] === board[6] && board[6] === board[9])
+		{
+			return board[3];
+		}
+
+		if(board[1] && board[1] === board[5] && board[5] === board[9])
+		{
+			return board[1];
+		}
+
+		if(board[3] && board[3] === board[5] && board[5] === board[7])
+		{
+			return board[3];
+		}
+
+		return null;
+	}
+
+	var bigVictoryCheck = function(board)
+	{
+		if(board[1].wonBy && board[1].wonBy === board[2].wonBy && board[2].wonBy === board[3].wonBy)
+		{
+			return board[1].wonBy;
+		}
+
+		if(board[4].wonBy && board[4].wonBy === board[5].wonBy && board[5].wonBy === board[6].wonBy)
+		{
+			return board[4].wonBy;
+		}
+
+		if(board[7].wonBy && board[7].wonBy === board[8].wonBy && board[8].wonBy === board[9].wonBy)
+		{
+			return board[7].wonBy;
+		}
+
+		if(board[1].wonBy && board[1].wonBy === board[4].wonBy && board[4].wonBy === board[7].wonBy)
+		{
+			return board[1].wonBy;
+		}
+
+		if(board[2].wonBy && board[2].wonBy === board[5].wonBy && board[5].wonBy === board[8].wonBy)
+		{
+			return board[2].wonBy;
+		}
+
+		if(board[3].wonBy && board[3].wonBy === board[6].wonBy && board[6].wonBy === board[9].wonBy)
+		{
+			return board[3].wonBy;
+		}
+
+		if(board[1].wonBy && board[1].wonBy === board[5].wonBy && board[5].wonBy === board[9].wonBy)
+		{
+			return board[1].wonBy;
+		}
+
+		if(board[3].wonBy && board[3].wonBy === board[5].wonBy && board[5].wonBy === board[7].wonBy)
+		{
+			return board[3].wonBy;
+		}
+
+		return null;
+	}
+
+	var littleDrawCheck = function(board)
+	{
+		var isBoardFull = !_.contains(board, null);
+		return isBoardFull;
+	}
+
+	var bigDrawCheck = function(board)
+	{
+		var availableMove = _.find(board, function(grid)
+		{
+			if(grid.wonBy || grid.draw)
 			{
 				return false;
 			}
 			return true;
+		})
+
+		if(availableMove)
+		{
+			return false;
 		}
+		return true;
+	}
 
 	var newBoard = function()
 	{
