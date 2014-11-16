@@ -36,9 +36,8 @@ var uttView = function(onReady, socket)
 	{		
 		loadGame = uttGameLogic(socket, username, templates, onLoadChat);
 		chatRoom = uttChatRoom(socket, username, templates, onLoadGame);
-		element = $(templates.utt())
-		element.append(chatRoom())
-		socket.emit('authorize', username);
+		element = $(templates.utt());
+		element.append(chatRoom());
 		onReady();
 	});
 

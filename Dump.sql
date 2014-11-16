@@ -30,7 +30,7 @@ CREATE TABLE `Games` (
   `startTime` datetime DEFAULT NULL,
   `challenger` varchar(15) DEFAULT NULL,
   `challengee` varchar(15) DEFAULT NULL,
-  `winner` varchar(15) DEFAULT NULL,
+  `wonBy` varchar(15) DEFAULT NULL,
   `lastMoveTime` datetime DEFAULT NULL,
   `playableGrid` int(10) unsigned DEFAULT NULL,
   `state` varchar(15) NOT NULL,
@@ -55,13 +55,10 @@ CREATE TABLE `Messages` (
   `message` longtext NOT NULL,
   `timeSent` datetime NOT NULL,
   `sender` varchar(15) NOT NULL,
-  `recipient` varchar(15) DEFAULT NULL,
-  `gameId` varchar(30) DEFAULT NULL,
+  `gameId` varchar(45) DEFAULT NULL,
   KEY `sender_idx` (`sender`),
-  KEY `recipient_idx` (`recipient`),
   KEY `gameId_idx` (`gameId`),
   CONSTRAINT `gameId` FOREIGN KEY (`gameId`) REFERENCES `Games` (`gameId`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `recipient` FOREIGN KEY (`recipient`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `sender` FOREIGN KEY (`sender`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -146,4 +143,4 @@ CREATE TABLE `Users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-11-15  1:15:15
+-- Dump completed on 2014-11-16 11:42:16

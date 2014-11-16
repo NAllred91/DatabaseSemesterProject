@@ -35,7 +35,7 @@
 
 			// Handle each button. Clear the app container
 			// and then load the neccessary files.
-			$("#PM").on('click', function()
+			$("#search").on('click', function()
 			{
 				$('#app').empty();
 				$('#app').append();
@@ -47,7 +47,7 @@
 				$('#app').append(uttElement.layout());
 			});
 
-			$("#profiles").on('click', function()
+			$("#editProfile").on('click', function()
 			{
 				$('#app').empty();
 				$('#app').append();
