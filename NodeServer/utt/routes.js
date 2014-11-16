@@ -92,16 +92,6 @@
 		// has been given.
 		var restrictedSocket = function(socket, name)
 		{
-			socket.on('subscribe', function(room)
-			{
-				socket.join(room);
-			});
-
-			socket.on('unsubscribe', function(room)
-			{
-				socket.leave(room);
-			});
-
 			socket.on('chatMessage', function(msg)
 			{
 				dbHelper.addChatRoomMessage(name, msg);
@@ -115,9 +105,11 @@
 
 			socket.on('gameChatMessage', function(msg)
 			{
+				console.log(msg)
 				dbHelper.addGameChatMessage(name, msg.gameId, msg.message);
 				msg.sender = name;
 				io.sockets.in(msg.gameId).emit("gameChatMessage", msg);
+				console.log(io.sockets.in(msg.gameId).connected);
 			});
 
 			socket.on('requestGame', function(opponentName)

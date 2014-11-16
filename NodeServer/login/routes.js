@@ -16,7 +16,16 @@
 			{
 				idMap[username] ? idMap[username].push(socket.id) : idMap[username] = [socket.id];
 				dbHelper.addUserConnection(username);
-				console.log(idMap)
+				socket.on('subscribe', function(room)
+				{
+					socket.join(room);
+				});
+
+				socket.on('unsubscribe', function(room)
+				{
+					console.log('unsubscribe', room)
+					socket.leave(room);
+				});
 				socket.on('disconnect', function()
 				{
 					dbHelper.removeUserConnection(username);

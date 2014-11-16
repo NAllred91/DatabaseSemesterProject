@@ -220,7 +220,6 @@ var uttGameLogic = function(socket, username, templates, onLoadChat)
 
 	var incomingChatMessage = function(msg)
 	{
-		console.log(msg)
 		var addMessage = function(message)
 		{
 			element.find("#gameChatScrollArea").append(templates.chatMessage(
@@ -233,7 +232,6 @@ var uttGameLogic = function(socket, username, templates, onLoadChat)
 
 		if(_.isArray(msg))
 		{
-			console.log("IS ARRAY!")
 			_.each(msg, function(message)
 			{
 				addMessage(message);
@@ -250,10 +248,11 @@ var uttGameLogic = function(socket, username, templates, onLoadChat)
 	{	
 		gameData = data;
 		console.log(data)
-		if(new Date().getTime() - data.lastMoveTime < 86400000 || data.activePlayer === username)
+		console.log(username)
+		console.log(new Date().getTime() , new Date(data.lastMoveTime).getTime())
+		if(new Date(data.lastMoveTime).getTime() - new Date().getTime() > 172800000 && data.activePlayer != username)
 		{
-			//TODO inverse....
-			element.find('.claimVictoryButton').hide()
+			element.find('.claimVictoryButton').show()
 		}
 		if(data.activePlayer === username)
 		{
@@ -324,15 +323,17 @@ var uttGameLogic = function(socket, username, templates, onLoadChat)
 		{
 			if(data)
 			{
-				gameData = data;
-				socket.emit("subscribe", gameId);
 				if(previousListener)
 				{
 					socket.emit("unsubscribe", previousListener);
+					socket.removeAllListeners("gameChatMessage");
+					socket.removeAllListeners("gameUpdate");
 				}
+				gameData = data;
+				socket.emit("subscribe", gameId);
 				socket.on("gameChatMessage", incomingChatMessage);
 				socket.on("gameUpdate", incomingData);
-				previousListener = data.gameId;
+				previousListener = gameId;
 
 				incomingData(data);
 			}
