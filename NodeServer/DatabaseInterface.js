@@ -105,7 +105,7 @@
 		});
 	}
 
-	databaseInterface.prototype.registerUser = function(userName, password)
+	databaseInterface.prototype.registerUser = function(userName, password, callback)
 	{
 		var db = this.db;
 
@@ -121,8 +121,9 @@
 		{
 			if(err)
 			{
-				console.log("Database Error: connectionCount reset failed.. ", err);
-			}		
+				console.log("Database Error: registering new user failed.. ", err);
+			}
+			callback(err);	
 		});
 	}
 

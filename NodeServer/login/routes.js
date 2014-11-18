@@ -110,7 +110,7 @@
 					}
 					else
 					{
-						res.redirect('/login.html');
+						res.sendStatus(201);
 					}
 				});
 		});
