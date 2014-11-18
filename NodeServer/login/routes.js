@@ -65,7 +65,7 @@
 				else
 				{
 					req.session.user = correctCaseName;
-					req.session.cookie.maxAge = 30000;
+					req.session.cookie.maxAge = 120000;
 					res.redirect('/home.html');
 				}
 			});                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
@@ -140,6 +140,7 @@
 			}
 			else
 			{
+				console.log("Error: Ping Failed..")
 				res.sendStatus(401);
 			}
 		});

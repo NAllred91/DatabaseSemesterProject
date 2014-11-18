@@ -90,7 +90,7 @@
 			_.delay(function()
 			{
 				ping();
-			},25000)
+			},90000)
 		})
 		.fail(function()
 		{
