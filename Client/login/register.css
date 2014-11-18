@@ -1,9 +1,14 @@
-.formDiv
+.registrationPage 
+{
+	background-color: rgb(57, 221, 221);
+}
+
+.registrationPage .formDiv
 {
 	display: block;
 }
 
-.formContainer
+.registrationPage .formContainer
 {
 	width: 170px;
 	clear: both;
@@ -13,37 +18,27 @@
 	margin-right: 30px;
 }
 
-.formContainer input
+.registrationPage .formContainer input
 {
 	width: 95%;
 	clear: both;
 }
 
-.formContainer button
+.registrationPage .formContainer button
 {
 	width: 95%;
 	clear: both;
 }
 
-.form
+.registrationPage .form
 {
 		margin: 5px;
 }
 
-.header
+.registrationPage .header
 {
 	font-size: xx-large;
 	box-shadow: 5px 5px 5px;
 	margin-bottom: 21px;
 	background-color: rgb(163, 189, 192);
-}
-
-.body
-{
-	background-color: rgb(57, 221, 221);
-}
-
-.advise
-{
-	
 }

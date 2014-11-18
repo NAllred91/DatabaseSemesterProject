@@ -1,4 +1,4 @@
-.onlineUsersContainer
+.uttContainer .onlineUsersContainer
 {
 	width: 20%;
 	height: 0;
@@ -8,7 +8,7 @@
 	background-color: white;
 }
 
-.yourGamesTitle
+.uttContainer .yourGamesTitle
 {
 	width: 99%%;
 	box-shadow: 0px 0px 3px 3px;
@@ -17,8 +17,8 @@
 	text-align: center;
 }
 
-.activeGamesTitle,
-.pendingGamesTitle
+.uttContainer .activeGamesTitle,
+.uttContainer .pendingGamesTitle
 {
 	width: 96%;
 	margin-top: 2%;
@@ -30,8 +30,8 @@
 }
 
 
-.activeGamesContainer,
-.pendingGamesContainer
+.uttContainer .activeGamesContainer,
+.uttContainer .pendingGamesContainer
 {
 	width: 45%;
 	height: 0;
@@ -42,18 +42,18 @@
 	float: left;
 }
 
-.activeGamesContainer
+.uttContainer .activeGamesContainer
 {
 	margin-left: 1.5%;
 }
 
-.pendingGamesContainer
+.uttContainer .pendingGamesContainer
 {
 	margin-left: 4%;
 }
 
-.activeGamesContainer .scrollArea,
-.pendingGamesContainer .scrollArea
+.uttContainer .activeGamesContainer .scrollArea,
+.uttContainer .pendingGamesContainer .scrollArea
 {
 	height: 32vw;
 	float: left;
@@ -62,12 +62,12 @@
 	margin-top:3%;
 }
 
-.userList
+.uttContainer .userList
 {
 	width: 20%;
 }
 
-.chatArea
+.uttContainer .chatArea
 {
 	width: 75%;
 	height: 0;
@@ -78,38 +78,39 @@
 	background-color: rgb(236, 149, 138);
 }
 
-.boardContainer .chatArea
+.uttContainer .boardContainer .chatArea
 {
 	width: 100%;
 	margin-top: 10%;
 	margin-left: 0%;
 }
 
-.boardContainer .chatArea .scrollArea
+.uttContainer .uttGame .boardContainer .gameChatArea .scrollArea
 {
-	height: 14vw;
+	height: 27vh;
 }
 
-.chatArea .scrollArea
+.uttContainer .mainChatArea .scrollArea,
+.uttContainer .onlineUsersContainer .scrollArea
 {
-	height: 30vw;
+	height: 29vw;
 }
 
-.scrollArea
+.uttContainer .scrollArea
 {
 	overflow-y: auto;
 	margin-left: 2%;
 	margin-top: 1%;
 }
 
-.active
+.uttContainer .active
 {
 	border: 2px solid;
 	margin-right: 2%;
 	margin-top: 1%;
 }
 
-.onlineUser
+.uttContainer .onlineUser
 {
 	float: left;
 	clear: left;
@@ -117,36 +118,36 @@
 	margin-left: 4%;
 }
 
-.typeArea
+.uttContainer .typeArea
 {
 	width: 63%;
 	margin-left: 2%;
 	margin-top: 1%;
 }
 
-.boardContainer .typeArea
+.uttContainer .boardContainer .typeArea
 {
 	width: 85%;
 }
 
-.submitButton
+.uttContainer .submitButton
 {
 	width: 10%;
 }
 
-.requestGame
+.uttContainer .requestGame
 {
 	width: 20%;
 
 }
 
-.header
+.uttContainer .header
 {
 	display: inline-block;
 	width: 100%;
 }
 
-.board
+.uttContainer .board
 {
 	top: 3vh;
 	width: 81vh;
@@ -156,7 +157,7 @@
 	margin-right: auto;
 }
 
-.boardContainer
+.uttContainer .boardContainer
 {
 	height: 86vh;
 	width: 88vh;
@@ -165,7 +166,8 @@
 	margin-right: auto;
 	border-radius: 19px;
 }
-.board .bigGrid
+
+.uttContainer .board .bigGrid
 {
 	width: 33%;
 	height: 0;
@@ -175,7 +177,7 @@
 	background-color: black;
 }
 
-.board .verticalLine1
+.uttContainer .board .verticalLine1
 {
 	width: 1%;
 	height: 0;
@@ -186,7 +188,7 @@
 	background-color: rgb(9,199,146);
 }
 
-.board .verticalLine2
+.uttContainer .board .verticalLine2
 {
 	width: 1%;
 	height: 0;
@@ -197,7 +199,7 @@
 	background-color: rgb(9,199,146);
 }
 
-.board .horizontalLine1
+.uttContainer .board .horizontalLine1
 {
 	height: 1%;
 	width: 0;
@@ -208,7 +210,7 @@
 	position: absolute;
 }
 
-.board .horizontalLine2
+.uttContainer .board .horizontalLine2
 {
 	height: 1%;
 	width: 0;
@@ -219,31 +221,31 @@
 	position: absolute;
 }
 
-.board .bigLine.horizontalLine1,
-.board .bigLine.horizontalLine2
+.uttContainer .board .bigLine.horizontalLine1,
+.uttContainer .board .bigLine.horizontalLine2
 {
 	background-color: rgb(207,8,8);
 	height: 1vh;
 }
 
-.board .bigLine.verticalLine1,
-.board .bigLine.verticalLine2
+.uttContainer .board .bigLine.verticalLine1,
+.uttContainer .board .bigLine.verticalLine2
 {
 	background-color: rgb(207,8,8);
 	width: 1vh;
 }
 
-.uttGame .uttGameButton
+.uttContainer .uttGame .uttGameButton
 {
 	float: right;
 }
 
-.uttGame .turnIndicator
+.uttContainer .uttGame .turnIndicator
 {
 	display: inline;
 }
 
-.ximg
+.uttContainer .ximg
 {
 	color: blue;
 	font-size: 9vh;
@@ -252,7 +254,7 @@
 	position: absolute;
 }
 
-.oimg
+.uttContainer .oimg
 {
 	color: red;
 	font-size: 9vh;

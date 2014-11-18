@@ -1,12 +1,4 @@
-.header
-{
-	font-size: xx-large;
-	box-shadow: 5px 5px 5px;
-	margin-bottom: 21px;
-	background-color: rgb(163, 189, 192);
-}
-
-.body
+.loginPage 
 {
 	background-color: rgb(57, 221, 221);
 	background-image: url('ink-splash-hi.png');
@@ -15,7 +7,15 @@
 	background-position-y: 55px;
 }
 
-.formContainer
+.loginPage .header
+{
+	font-size: xx-large;
+	box-shadow: 5px 5px 5px;
+	margin-bottom: 21px;
+	background-color: rgb(163, 189, 192);
+}
+
+.loginPage .formContainer
 {
 	width: 170px;
 	clear: both;
@@ -25,19 +25,19 @@
 	margin-right: 30px;
 }
 
-.formContainer input
+.loginPage .formContainer input
 {
 	width: 95%;
 	clear: both;
 }
 
-.formContainer button
+.loginPage .formContainer button
 {
 	width: 95%;
 	clear: both;
 }
 
-.form
+.loginPage .form
 {
 		margin: 5px;
 }
