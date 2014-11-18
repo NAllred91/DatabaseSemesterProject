@@ -304,6 +304,11 @@ var uttGameLogic = function(socket, username, templates, onLoadChat)
 		$(templates.chatRoom).find('#' + gameId).remove();
 	}
 
+	var clearChat = function()
+	{
+		element.find("#gameChatScrollArea").empty();
+	}
+
 	var gridMap =
 	{
 		1: "#grid1",
@@ -341,6 +346,7 @@ var uttGameLogic = function(socket, username, templates, onLoadChat)
 
 		$.get('/utt/gameChatLog/' + gameId, function(log)
 		{
+			clearChat();
 			incomingChatMessage(log);
 		});
 

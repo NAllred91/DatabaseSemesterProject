@@ -109,7 +109,6 @@
 				dbHelper.addGameChatMessage(name, msg.gameId, msg.message);
 				msg.sender = name;
 				io.sockets.in(msg.gameId).emit("gameChatMessage", msg);
-				console.log(io.sockets.in(msg.gameId).connected);
 			});
 
 			socket.on('requestGame', function(opponentName)

@@ -23,7 +23,6 @@
 
 				socket.on('unsubscribe', function(room)
 				{
-					console.log('unsubscribe', room)
 					socket.leave(room);
 				});
 				socket.on('disconnect', function()
