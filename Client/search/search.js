@@ -6,7 +6,7 @@ var mainSearchView = function(onReady, socket, onLoadProfile)
 	var username;
 	var loadResults;
 	var loadSearch;
-	
+
 	var scripts = [
 		'searchView.js',
 		'resultsView.js'
@@ -15,7 +15,8 @@ var mainSearchView = function(onReady, socket, onLoadProfile)
 	var html = [
 		'search.html',
 		'results.html',
-		'result.html'
+		'result.html',
+		'noResults.html'
 	]
 
 	var css = [

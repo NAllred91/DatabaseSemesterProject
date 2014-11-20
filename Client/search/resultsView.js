@@ -11,9 +11,9 @@ var resultsView = function(socket, username, templates, onLoadProfile)
 
 	var loadResults = function(results)
 	{
+		element.find('#resultsScrollArea').empty();
 		if(results.length > 0)
 		{
-			element.find('#resultsScrollArea').empty();
 			_.each(results, function(result)
 			{
 				element.find('#resultsScrollArea').append(templates.result(
@@ -22,6 +22,10 @@ var resultsView = function(socket, username, templates, onLoadProfile)
 					}
 				));
 			});
+		}
+		else
+		{
+			element.find('#resultsScrollArea').append(templates.noResults());
 		}
 		return element;
 	};
