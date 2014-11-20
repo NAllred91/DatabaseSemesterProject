@@ -475,5 +475,23 @@
 			}
 		});
 	}
+
+	databaseInterface.prototype.searchUsers = function(query, callback)
+	{
+		var db = this.db;
+
+		var queryTemplate = _.template("SELECT username FROM Users WHERE username LIKE '%<%= query %>%'");
+
+		var databaseCall = queryTemplate(
+		{
+			query: query
+		});
+
+		db.query(databaseCall, function(err, result)
+		{
+			callback(result || []);
+		});
+	}
+
 	module.exports = databaseInterface;
 }());

@@ -1,12 +1,12 @@
 // Code for search
-var mainSearchView = function(onReady, socket)
+var mainSearchView = function(onReady, socket, onLoadProfile)
 {
 	var templates = {};
 	var element;
 	var username;
 	var loadResults;
 	var loadSearch;
-
+	
 	var scripts = [
 		'searchView.js',
 		'resultsView.js'
@@ -14,7 +14,8 @@ var mainSearchView = function(onReady, socket)
 
 	var html = [
 		'search.html',
-		'results.html'
+		'results.html',
+		'result.html'
 	]
 
 	var css = [
@@ -27,7 +28,7 @@ var mainSearchView = function(onReady, socket)
 	var ready = _.after(length + 1, function()
 	{		
 		loadSearch = searchView(socket, username, templates, onLoadResults);
-		loadResults = resultsView(socket, username, templates, onLoadSearch);
+		loadResults = resultsView(socket, username, templates, onLoadProfile, onLoadSearch);
 		element = $(templates.search());
 		onReady();
 	});

@@ -5,7 +5,7 @@
 
 	// Wait for all the applications to be ready,
 	// and wait for the DOM to be ready.
-	var onReady = _.after(3, function(){
+	var onReady = _.after(4, function(){
 		$(document).ready(function()
 		{
 			// Append the chat view, that is where the user will begin.
@@ -61,6 +61,17 @@
 		});
 	});
 
+	var onLoadProfile = function(username)
+	{
+		$('#app').empty();
+		$('#app').append(profileElement.layout(username));
+	}
+
+	var onLoadGame = function(gameId)
+	{
+		console.log(gameId)
+	}
+
 	var username;
 	var socket = io();
 
@@ -103,7 +114,8 @@
 
 	// Load the various application views.
 	var uttElement = uttView(onReady, socket);
-	var searchElement = mainSearchView(onReady, socket);
+	var searchElement = mainSearchView(onReady, socket, onLoadProfile);
+	var profileElement = mainProfileView(onReady, socket, onLoadGame);
 	
 
 }())
