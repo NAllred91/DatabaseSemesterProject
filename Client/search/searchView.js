@@ -15,9 +15,18 @@ var searchView = function(socket, username, templates, onLoadResults)
 		}	
 	});
 
+	$('body').on('keyup', '#searchArea', function(event)
+	{
+		if(event.which === 13)
+		{
+			$('#searchSubmit').trigger('click');
+		}
+	});
+
 
 	var loadSearch = function()
 	{
+		element.find('#searchArea').val("");
 		return element;
 	};
 
