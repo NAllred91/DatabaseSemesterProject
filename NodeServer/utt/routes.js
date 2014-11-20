@@ -5,7 +5,6 @@
 	var uuid = require('uuid-v4');
 	var events = require('events');
 	var em = new events.EventEmitter();
-	var bot = 'Bot';
 
 	var setup = function(app, dbHelper, io, idMap)
 	{
@@ -15,6 +14,14 @@
 		app.get('/utt/NonCompleteGames/:username', function(req, res)
 		{
 			dbHelper.getActiveAndPendingGames(req.params.username, function(games)
+			{
+				res.send(games);
+			});
+		});
+
+		app.get('/utt/CompleteGames/:username', function(req, res)
+		{
+			dbHelper.getCompleteGames(req.params.username, function(games)
 			{
 				res.send(games);
 			});
@@ -322,6 +329,26 @@
 						else if(game.from === name)
 						{
 							opponentName = game.to;
+						}
+
+						if(draw)
+						{
+							dbHelper.addUserDraw(name);
+							dbHelper.addUserDraw(opponentName);
+						}
+
+						if(wonBy)
+						{
+							if(wonBy === opponentName)
+							{
+								dbHelper.addUserLose(name);
+								dbHelper.addUserWin(opponentName);
+							}
+							else
+							{
+								dbHelper.addUserLose(opponentName);
+								dbHelper.addUserWin(name);
+							}
 						}
 
 						dbHelper.updateGame(gameId, appliedMove.board, appliedMove.playableGrid, activePlayer, state, wonBy, function(err, now)

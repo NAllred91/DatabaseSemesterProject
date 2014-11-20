@@ -69,7 +69,8 @@
 
 	var onLoadGame = function(gameId)
 	{
-		console.log(gameId)
+		$('#app').empty();
+		$('#app').append(uttElement.layout(gameId));
 	}
 
 	var username;

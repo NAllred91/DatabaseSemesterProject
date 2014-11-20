@@ -11,7 +11,7 @@
 		{
 			// The connection must identify what user it is representing.  This is
 			// an obvious security flaw, however it is ok for the purposes of the class.
-			// Under normal use of the website this will be suffecient. 
+			// Under normal use of the website this will be sufficient. 
 			socket.on('identify', function(username)
 			{
 				idMap[username] ? idMap[username].push(socket.id) : idMap[username] = [socket.id];

@@ -240,11 +240,6 @@
 	float: right;
 }
 
-.uttContainer .uttGame .turnIndicator
-{
-	display: inline;
-}
-
 .uttContainer .ximg
 {
 	color: blue;
@@ -261,4 +256,23 @@
 	width: 0;
 	height: 0;
 	position: absolute;
+}
+
+.uttContainer .playerTitle
+{
+	margin-top: 4vh;
+	text-align: center;
+	font-size: 7vh;
+}
+
+.uttContainer .turnIndicator
+{
+	text-align: center;
+	display: block;
+}
+
+.uttContainer .claimVictoryButton
+{
+	display: inline-block;
+	margin-left: 44vw;
 }

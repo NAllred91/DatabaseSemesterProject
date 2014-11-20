@@ -92,7 +92,7 @@ var uttChatRoom = function(socket, username, templates, onLoadGame)
 
 	$('body').on('click', '.goToGame', function(event)
 	{
-		onLoadGame(event.currentTarget.value);		
+		onLoadGame(event.currentTarget.value);
 	});
 
 	socket.on('chatMessage', function(msg)

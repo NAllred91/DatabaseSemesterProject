@@ -27,7 +27,30 @@
 			{
 				console.log("Database Error: Getting game players failed.. ", err);
 			}
+
 			callback(results[0] || {});
+		});
+	}
+
+	databaseInterface.prototype.getUserInformation = function(username, callback)
+	{
+		var db = this.db;
+
+		var queryTemplate = _.template("SELECT username, wins, loses, draws, connectionCount FROM Users WHERE username = '<%= username %>'");
+
+		var databaseCall = queryTemplate(
+		{
+			username: username
+		});
+
+		db.query(databaseCall, function(err, results)
+		{
+			if(err)
+			{
+				console.log("Database Error: Getting user information failed.. ", err);
+			}
+
+			callback(results[0] || {})
 		});
 	}
 
@@ -65,6 +88,66 @@
 		});
 	}
 
+	databaseInterface.prototype.addUserWin = function(userName)
+	{
+		var db = this.db;
+
+		var queryTemplate = _.template("UPDATE Users SET wins=wins + 1 WHERE userName='<%= userName %>'");
+
+		var databaseCall = queryTemplate(
+		{
+			userName: userName
+		});
+
+		db.query(databaseCall, function(err)
+		{
+			if(err)
+			{
+				console.log("Database Error: Incrementing user wins failed.. ", err);
+			}
+		});
+	}
+
+	databaseInterface.prototype.addUserLose = function(userName)
+	{
+		var db = this.db;
+
+		var queryTemplate = _.template("UPDATE Users SET loses=loses + 1 WHERE userName='<%= userName %>'");
+
+		var databaseCall = queryTemplate(
+		{
+			userName: userName
+		});
+
+		db.query(databaseCall, function(err)
+		{
+			if(err)
+			{
+				console.log("Database Error: Incrementing user loses failed.. ", err);
+			}
+		});
+	}
+
+	databaseInterface.prototype.addUserDraw = function(userName)
+	{
+		var db = this.db;
+
+		var queryTemplate = _.template("UPDATE Users SET draws=draws + 1 WHERE userName='<%= userName %>'");
+
+		var databaseCall = queryTemplate(
+		{
+			userName: userName
+		});
+		
+		db.query(databaseCall, function(err)
+		{
+			if(err)
+			{
+				console.log("Database Error: Incrementing user draws failed.. ", err);
+			}
+		});
+	}
+
 	databaseInterface.prototype.removeUserConnection = function(userName)
 	{
 		var db = this.db;
@@ -79,9 +162,9 @@
 		db.query(databaseCall, function(err)
 		{
 			if(err)
-				{
-					console.log("Database Error: Removing user connection failed.. ", err);
-				}
+			{
+				console.log("Database Error: Removing user connection failed.. ", err);
+			}
 		});
 	}
 
@@ -178,7 +261,7 @@
 			username: username
 		});
 
-		db.query(databaseCall, function(err, result, somethin)
+		db.query(databaseCall, function(err, result)
 		{
 			if(err)
 			{
@@ -200,10 +283,37 @@
 		});
 	}
 
-	databaseInterface.prototype.getFinishedGames = function(username, callback)
+	databaseInterface.prototype.getCompleteGames = function(username, callback)
 	{
 		var db = this.db;
-		callback();
+
+		var queryTemplate = _.template("SELECT state, gameId, challenger, challengee, lastMoveTime, activePlayer, wonBy FROM Games WHERE state = 'complete' AND (challenger = '<%= username %>' OR challengee = '<%= username %>')")
+		
+		var databaseCall = queryTemplate(
+		{
+			username: username
+		});
+
+		db.query(databaseCall, function(err, result)
+		{
+			if(err)
+			{
+				console.log("Database Error: Getting complete games failed.. ",err);
+				callback([]);
+			}
+			else
+			{
+				// TODO consistency....
+				var formattedResults = _.map(result, function(game)
+				{
+					game.to = game.challengee;
+					game.from = game.challenger;
+					return game;
+				});
+
+				callback(formattedResults);
+			}
+		});
 	}
 
 	databaseInterface.prototype.getGameData = function(gameId, callback)

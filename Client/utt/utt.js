@@ -22,7 +22,8 @@ var uttView = function(onReady, socket)
 		'userDropDown.html',
 		'onlineUser.html',
 		'xImage.html',
-		'oImage.html'
+		'oImage.html',
+		'players.html'
 	]
 
 	var css = [
@@ -91,11 +92,16 @@ var uttView = function(onReady, socket)
 	});
 
 
-	var layout = function()
+	var layout = function(gameId)
 	{
-		// Whenever layout is called, the chat view
-		// is set.
-		onLoadChat();
+		if(gameId)
+		{
+			onLoadGame(gameId);
+		}
+		else
+		{
+			onLoadChat();
+		}
 		return element;
 	};
 

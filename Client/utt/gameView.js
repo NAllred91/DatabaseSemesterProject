@@ -4,6 +4,7 @@ var uttGameLogic = function(socket, username, templates, onLoadChat)
 	var element = $(templates.game())
 
 	var gameData;
+	var viewing;
 	var previousListener;
 
 	$('body').on('click', '#returnToUttGameRoom', function()
@@ -188,7 +189,7 @@ var uttGameLogic = function(socket, username, templates, onLoadChat)
 		{
 			_.each(grid.moves, function(move, mini)
 			{
-				if(move === username)
+				if(move === username || (viewing && move === gameData.from))
 				{
 					placeXImage(big, mini, _.noop);
 				}
@@ -198,7 +199,7 @@ var uttGameLogic = function(socket, username, templates, onLoadChat)
 				}
 			});
 
-			if(grid.wonBy === username)
+			if(grid.wonBy === username || (viewing && grid.wonBy === gameData.from))
 			{
 				element.find(gridMap[big]).css('background-color', 'lightblue');
 			}
@@ -250,7 +251,7 @@ var uttGameLogic = function(socket, username, templates, onLoadChat)
 		console.log(data)
 		console.log(username)
 		console.log(new Date().getTime() , new Date(data.lastMoveTime).getTime())
-		if(new Date(data.lastMoveTime).getTime() - new Date().getTime() > 172800000 && data.activePlayer != username)
+		if(new Date(data.lastMoveTime).getTime() - new Date().getTime() > 172800000 && data.activePlayer != username && (username === data.to || username === data.from) && data.state === "active")
 		{
 			element.find('.claimVictoryButton').show()
 		}
@@ -286,10 +287,15 @@ var uttGameLogic = function(socket, username, templates, onLoadChat)
 				element.find('#turnIndicator').empty();
 				element.find('#turnIndicator').append('The game was a draw!');
 			}
-			else
+			else if(data.to === username || data.from === username)
 			{
 				element.find('#turnIndicator').empty();
 				element.find('#turnIndicator').append('You lost to ' + opponent + '.');
+			}
+			else
+			{
+				element.find('#turnIndicator').empty();
+				element.find('#turnIndicator').append(data.wonBy + ' won!');
 			}
 
 			removeGame(data.gameId);
@@ -300,7 +306,6 @@ var uttGameLogic = function(socket, username, templates, onLoadChat)
 
 	var removeGame = function(gameId)
 	{
-		console.log('remove ' + gameId)
 		$(templates.chatRoom).find('#' + gameId).remove();
 	}
 
@@ -328,6 +333,33 @@ var uttGameLogic = function(socket, username, templates, onLoadChat)
 		{
 			if(data)
 			{
+				if(data.to !== username && data.from !== username)
+				{
+					viewing = true;
+				}
+				else
+				{
+					viewing = false;
+				}
+
+				element.find('#playerTitle').empty();
+				if(data.to === username)
+				{
+					element.find('#playerTitle').append(templates.players(
+					{
+						xPlayer: data.to,
+						yPlayer: data.from
+					}))
+				}
+				else
+				{
+					element.find('#playerTitle').append(templates.players(
+					{
+						xPlayer: data.from,
+						yPlayer: data.to
+					}))
+				}
+
 				if(previousListener)
 				{
 					socket.emit("unsubscribe", previousListener);

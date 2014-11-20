@@ -14,6 +14,7 @@
 {
 	display: block;
 	text-align: center;
+	font-size: 7vh;
 }
 
 .search .scrollArea
@@ -37,4 +38,10 @@
 	border-style: solid;
 	border-width: 2px;
 	width: 96%;
+}
+
+.search .viewProfile
+{
+	float: right;
+	margin-right: 1vw;
 }

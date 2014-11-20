@@ -7,6 +7,7 @@
 			'./login/routes.js',
 			'./home/routes.js',
 			'./utt/routes.js',
+			'./uttBot/routes.js',
 			'./search/routes.js',
 			'./profile/routes.js'
 		]

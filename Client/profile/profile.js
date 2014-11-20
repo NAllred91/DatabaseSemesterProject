@@ -10,7 +10,10 @@ var mainProfileView = function(onReady, socket, onLoadGame)
 	]
 
 	var html = [
-		'profile.html'
+		'profile.html',
+		'usersProfile.html',
+		'usersGame.html',
+		'stats.html'
 	]
 
 	var css = [
