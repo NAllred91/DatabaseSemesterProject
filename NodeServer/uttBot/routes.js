@@ -62,6 +62,11 @@
 
 		var initialize = function()
 		{
+			dbHelper.registerUser('Bot', '0303', function()
+			{
+				//TODO error?
+			});
+
 			dbHelper.getActiveAndPendingGames('Bot', function(games)
 			{
 				_.each(games, function(game)
