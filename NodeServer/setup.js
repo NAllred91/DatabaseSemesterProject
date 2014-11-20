@@ -7,7 +7,7 @@
 			'./login/routes.js',
 			'./home/routes.js',
 			'./utt/routes.js',
-			'./forum/routes.js'
+			'./search/routes.js'
 		]
 	}
 

@@ -5,7 +5,7 @@
 
 	// Wait for all the applications to be ready,
 	// and wait for the DOM to be ready.
-	var onReady = _.after(2, function(){
+	var onReady = _.after(3, function(){
 		$(document).ready(function()
 		{
 			// Append the chat view, that is where the user will begin.
@@ -38,7 +38,7 @@
 			$("#search").on('click', function()
 			{
 				$('#app').empty();
-				$('#app').append();
+				$('#app').append(searchElement.layout());
 			});
 
 			$("#utt").on('click', function()
@@ -103,6 +103,7 @@
 
 	// Load the various application views.
 	var uttElement = uttView(onReady, socket);
+	var searchElement = mainSearchView(onReady, socket);
 	
 
 }())
