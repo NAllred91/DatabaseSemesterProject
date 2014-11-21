@@ -233,6 +233,9 @@
 							opponentName = game.to;
 						}
 
+						dbHelper.addUserWin(name);
+						dbHelper.addUserLose(opponentName);
+
 						dbHelper.updateGame(gameId, game.board, 0, null, "complete", name, function(err)
 						{
 							console.log("updated")

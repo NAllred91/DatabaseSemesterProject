@@ -248,10 +248,7 @@ var uttGameLogic = function(socket, username, templates, onLoadChat)
 	var incomingData = function(data)
 	{	
 		gameData = data;
-		console.log(data)
-		console.log(data.lastMoveTime)
 		var now = new Date();
-		console.log((now.getTime() + (now.getTimezoneOffset() * 60000)) - new Date(data.lastMoveTime).getTime())
 		if((now.getTime() + (now.getTimezoneOffset() * 60000)) - new Date(data.lastMoveTime).getTime() > 10000 && data.activePlayer !== username && (username === data.to || username === data.from) && data.state === "active" && data.lastMoveTime)
 		{
 			element.find('.claimVictoryButton').show();
