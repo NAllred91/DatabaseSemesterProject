@@ -9,8 +9,6 @@
 
 	var setup = function(app, dbHelper, io, idMap)
 	{	
-		bot.emit('identify', 'Bot');
-
 		bot.on('gameRequested', function(user, gameId)
 		{
 			bot.emit('subscribe', gameId);
@@ -62,11 +60,6 @@
 
 		var initialize = function()
 		{
-			dbHelper.registerUser('Bot', '0303', function()
-			{
-				//TODO error?
-			});
-
 			dbHelper.getActiveAndPendingGames('Bot', function(games)
 			{
 				_.each(games, function(game)
@@ -83,8 +76,26 @@
 			});
 		}
 
-		// Wait 6 seconds to make sure that the Bot has connected completely.
-		_.delay(function(){initialize()},6000);
+		// Check to see if the Bot is registered, if not register the Bot.
+		dbHelper.validateUser('Bot', '0303', function(user)
+		{
+			if(!user)
+			{
+				dbHelper.registerUser('Bot', '0303', function()
+				{
+					bot.emit('identify', 'Bot');
+					// Wait 6 seconds to make sure that the Bot has connected completely.
+					_.delay(function(){initialize()},6000);
+				});
+			}
+			else
+			{
+				bot.emit('identify', 'Bot');
+				// Wait 6 seconds to make sure that the Bot has connected completely.
+				_.delay(function(){initialize()},6000);
+			}
+		});
+		
 	}
 
 	module.exports = setup;

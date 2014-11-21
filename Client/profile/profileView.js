@@ -2,21 +2,44 @@
 var profileView = function(socket, username, templates, onLoadGame)
 {
 	var element = $(templates.usersProfile());
+	var WhoIsThis = '';
 
 	$('body').on('click', '.enterGame', function(event)
 	{
 		onLoadGame(event.currentTarget.value);	
 	});
 
-	var initializeProfile = function(username)
+	$('body').on('click', '#sendGameRequest', function(event)
 	{
+		console.log("click")
+		socket.emit('requestGame', WhoIsThis);
+	});
+
+	$('body').on('click', '#refreshProfile', function(event)
+	{
+		initializeProfile(WhoIsThis);
+	});
+
+
+	var initializeProfile = function(profileName)
+	{
+		if(profileName === username)
+		{
+			element.find('#sendGameRequest').hide();
+		}
+		else
+		{
+			element.find('#sendGameRequest').show();
+		}
+
 		element.find('#username').empty();
 		element.find('#activeGamesScrollArea').empty();
 		element.find('#completedGamesScrollArea').empty();
 		element.find('#statsContainer').empty();
+		element.find('#onlineIndicator').empty();
 
-		element.find('#username').append(username);
-		$.get('/utt/CompleteGames/' + username, function(games)
+		element.find('#username').append(profileName);
+		$.get('/utt/CompleteGames/' + profileName, function(games)
 		{
 			_.each(games, function(game)
 			{
@@ -39,31 +62,55 @@ var profileView = function(socket, username, templates, onLoadGame)
 			});
 		});
 
-		$.get('/utt/NonCompleteGames/' + username, function(games)
+		$.get('/utt/NonCompleteGames/' + profileName, function(games)
 		{
 			_.each(games, function(game)
 			{
+				var turnMessage;
+
+				if(game.activePlayer)
+				{
+					turnMessage = "Waiting for " + game.activePlayer + " to make a move!";
+				}
+				else
+				{
+					turnMessage = "Waiting for " + game.to + " to accept the game!";
+				}
 				element.find('#activeGamesScrollArea').append(templates.usersGame(
 				{
 					gameId: game.gameId,
 					user: game.from,
 					opponent: game.to,
-					turnMessage: "Waiting for " + game.activePlayer + " to make a move!"
+					turnMessage: turnMessage
 				}));
 			});
 		});
 
-		$.get('/profile/getUserInfo/' + username, function(info)
+		$.get('/profile/getUserInfo/' + profileName, function(info)
 		{
 			console.log(info)
-			element.find('#statsContainer').append(JSON.stringify(info))
+			element.find('#statsContainer').append(templates.stats(
+			{
+				wins: info.wins,
+				loses: info.loses,
+				draws: info.draws
+			}));
+
+			if(info.connectionCount > 0)
+			{
+				element.find('#onlineIndicator').append('(online)');
+			}
+			else
+			{
+				element.find('#onlineIndicator').append('(offline)');
+			}
 		});
 	}
 
-	var loadProfile = function(username)
+	var loadProfile = function(profileName)
 	{
-
-		initializeProfile(username);
+		WhoIsThis = profileName;
+		initializeProfile(profileName);
 		return element;
 	};
 

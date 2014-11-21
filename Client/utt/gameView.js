@@ -249,11 +249,16 @@ var uttGameLogic = function(socket, username, templates, onLoadChat)
 	{	
 		gameData = data;
 		console.log(data)
-		console.log(username)
-		console.log(new Date().getTime() , new Date(data.lastMoveTime).getTime())
-		if(new Date(data.lastMoveTime).getTime() - new Date().getTime() > 172800000 && data.activePlayer != username && (username === data.to || username === data.from) && data.state === "active")
+		console.log(data.lastMoveTime)
+		var now = new Date();
+		console.log((now.getTime() + (now.getTimezoneOffset() * 60000)) - new Date(data.lastMoveTime).getTime())
+		if((now.getTime() + (now.getTimezoneOffset() * 60000)) - new Date(data.lastMoveTime).getTime() > 10000 && data.activePlayer !== username && (username === data.to || username === data.from) && data.state === "active" && data.lastMoveTime)
 		{
-			element.find('.claimVictoryButton').show()
+			element.find('.claimVictoryButton').show();
+		}
+		else
+		{
+			element.find('.claimVictoryButton').hide();
 		}
 		if(data.activePlayer === username)
 		{
@@ -263,7 +268,7 @@ var uttGameLogic = function(socket, username, templates, onLoadChat)
 		else
 		{
 			element.find('#turnIndicator').empty();
-			element.find('#turnIndicator').append('Waiting for ' + data.activePlayer + ' to go');
+			element.find('#turnIndicator').append('Waiting for ' + data.activePlayer + ' to go...');
 		}
 		if(data.state === "complete")
 		{
@@ -349,7 +354,7 @@ var uttGameLogic = function(socket, username, templates, onLoadChat)
 					{
 						xPlayer: data.to,
 						yPlayer: data.from
-					}))
+					}));
 				}
 				else
 				{
@@ -357,7 +362,7 @@ var uttGameLogic = function(socket, username, templates, onLoadChat)
 					{
 						xPlayer: data.from,
 						yPlayer: data.to
-					}))
+					}));
 				}
 
 				if(previousListener)

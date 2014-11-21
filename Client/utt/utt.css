@@ -108,6 +108,7 @@
 	border: 2px solid;
 	margin-right: 2%;
 	margin-top: 1%;
+	margin-bottom: 2%;
 }
 
 .uttContainer .onlineUser
@@ -268,11 +269,23 @@
 .uttContainer .turnIndicator
 {
 	text-align: center;
-	display: block;
+	margin: 1%;
+}
+
+.uttContainer .goToGame
+{
+	margin: 1%;
+	width: 98%;
+}
+
+.uttContainer .active
+{
+
 }
 
 .uttContainer .claimVictoryButton
 {
 	display: inline-block;
 	margin-left: 44vw;
+	margin-bottom: 1%
 }

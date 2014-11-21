@@ -112,7 +112,6 @@
 
 			socket.on('gameChatMessage', function(msg)
 			{
-				console.log(msg)
 				dbHelper.addGameChatMessage(name, msg.gameId, msg.message);
 				msg.sender = name;
 				io.sockets.in(msg.gameId).emit("gameChatMessage", msg);
@@ -120,29 +119,32 @@
 
 			socket.on('requestGame', function(opponentName)
 			{
-				dbHelper.addNewGame(name, opponentName, newBoard(), function(gameId)
+				if(opponentName !== name)
 				{
-					if(gameId)
+					dbHelper.addNewGame(name, opponentName, newBoard(), function(gameId)
 					{
-						var myIds = idMap[name];
-						_.each(myIds, function(myId)
+						if(gameId)
 						{
-							if(io.sockets.connected[myId])
+							var myIds = idMap[name];
+							_.each(myIds, function(myId)
 							{
-								io.sockets.connected[myId].emit('gameWaiting', opponentName, gameId);
-							}	
-						});
-						
-						var opponentIds = idMap[opponentName];
-						_.each(opponentIds, function(opponentId)
-						{
-							if(io.sockets.connected[opponentId])
+								if(io.sockets.connected[myId])
+								{
+									io.sockets.connected[myId].emit('gameWaiting', opponentName, gameId);
+								}	
+							});
+							
+							var opponentIds = idMap[opponentName];
+							_.each(opponentIds, function(opponentId)
 							{
-								io.sockets.connected[opponentId].emit('gameRequested', name, gameId);
-							}
-						});
-					}
-				});	
+								if(io.sockets.connected[opponentId])
+								{
+									io.sockets.connected[opponentId].emit('gameRequested', name, gameId);
+								}
+							});
+						}
+					});	
+				}
 			});
 
 			socket.on('acceptGame', function(gameId)
@@ -211,52 +213,68 @@
 
 			socket.on('claimVictory', function(gameId)
 			{
-				// db.collection('games').findOne(
-				// {
-				// 	gameId: gameId
-				// },
-				// function(err, game)
-				// {
-				// 	if(err || !game)
-				// 	{
-				// 		return;
-				// 	}
-
-				// 	if(game.activePlayer !== name && (name === game.to || name === game.from))
-				// 	{
-				// 		if(new Date().getTime() - game.lastMoveTime > 86400000)
-				// 		{
-				// 			db.collection('games').update(
-				// 			{
-				// 				gameId: gameId
-				// 			},
-				// 			{
-				// 				$set: {
-				// 					wonBy: name,
-				// 					activePlayer: null,
-				// 					waitingPlayer: null,
-				// 					state: "complete"
-				// 				}
-				dbHelper.updateGame(name, gameId, null, null, "complete", name, function(err, opponentName)
+				var now = new Date();
+				dbHelper.getGameData(gameId, function(game)
 				{
-					if(!err)
+					if(!game)
 					{
-						// io.emit(gameId, {
-						// 	gameId: gameId,
-						// 	state: "complete",
-						// 	wonBy: name
-						// });
+						return;
+					}
 
-						// var oponnentId = idMap[opponentName]
-						// if(io.sockets.connected[opponentName])
-						// {
-						// 	io.sockets.connected[opponentName].emit('gameRemoved', gameId);
-						// }
+					if(game.activePlayer !== name && (name === game.to || name === game.from) && (now.getTime() + (now.getTimezoneOffset() * 60000)) - new Date(game.lastMoveTime).getTime() > 10000)
+				 	{
+				 		var opponentName;
+				 		if(game.to === name)
+						{
+							opponentName = game.from;
+						}
+						else
+						{
+							opponentName = game.to;
+						}
 
-						// if(io.sockets.connected[idMap[name]])
-						// {
-						// 	io.sockets.connected[idMap[name]].emit('gameRemoved', gameId);
-						// }
+						dbHelper.updateGame(gameId, game.board, 0, null, "complete", name, function(err)
+						{
+							console.log("updated")
+							if(!err)
+							{
+								io.sockets.in(gameId).emit("gameUpdate", 
+								{
+									type: "gameUpdate",
+									activePlayer: null,
+							 		board: game.board,
+									startTime: game.startTime,
+									from: game.from,
+									gameId: gameId,
+									playableGrid: 0,
+									state: "complete",
+									to: game.to,
+									lastMoveTime: now,
+									wonBy: name,
+							});
+
+							var myIds = idMap[name];
+							_.each(myIds, function(myId)
+							{
+								if(io.sockets.connected[myId])
+								{
+									console.log("meEmit")
+									io.sockets.connected[myId].emit('gameRemoved', gameId);
+								
+							 	}	
+							});
+
+							var opponentIds = idMap[opponentName];
+							_.each(opponentIds, function(opponentId)
+							{
+								if(io.sockets.connected[opponentId])
+								{
+									console.log("emit")
+									io.sockets.connected[opponentId].emit('gameRemoved', gameId);
+								}
+							});
+							}
+						});
 					}
 				});
 			});

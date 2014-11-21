@@ -12,29 +12,42 @@
 			// The connection must identify what user it is representing.  This is
 			// an obvious security flaw, however it is ok for the purposes of the class.
 			// Under normal use of the website this will be sufficient. 
-			socket.on('identify', function(username)
+			socket.once('identify', function(username)
 			{
-				idMap[username] ? idMap[username].push(socket.id) : idMap[username] = [socket.id];
-				dbHelper.addUserConnection(username);
-				socket.on('subscribe', function(room)
+				if(!idMap[username])
 				{
-					socket.join(room);
-				});
+					idMap[username] = [socket.id]
+					connect(username);
+				}
+				else if(!idMap[username][socket.id])
+				{
+					idMap[username].push(socket.id);
+					connect(username);
+				}
+			});
 
-				socket.on('unsubscribe', function(room)
+			var connect = function(username)
 				{
-					socket.leave(room);
-				});
-				socket.on('disconnect', function()
-				{
-					dbHelper.removeUserConnection(username);
-					idMap[username] = _.without(idMap[username], socket.id);
-					if(idMap[username].length === 0)
+					dbHelper.addUserConnection(username);
+					socket.on('subscribe', function(room)
 					{
-						delete idMap[username];
-					}
-				});
-			});		
+						socket.join(room);
+					});
+
+					socket.on('unsubscribe', function(room)
+					{
+						socket.leave(room);
+					});
+					socket.on('disconnect', function()
+					{
+						dbHelper.removeUserConnection(username);
+						idMap[username] = _.without(idMap[username], socket.id);
+						if(idMap[username].length === 0)
+						{
+							delete idMap[username];
+						}
+					});
+				}	
 		});
 
 		// Redirect to home if the user is logged in.
