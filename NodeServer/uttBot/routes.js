@@ -26,14 +26,16 @@
 
 				var big = move.big;
 				var mini = move.mini;
-
-				bot.emit('updateGame', gameData.gameId, big, mini, function(err)
+				_.delay(function()
 				{
-					if(err)
+					bot.emit('updateGame', gameData.gameId, big, mini, function(err)
 					{
-						console.log("Bot Error; " + JSON.stringify(err))
-					}
-				})
+						if(err)
+						{
+							console.log("Bot Error; " + JSON.stringify(err))
+						}
+					})
+				},1500)
 			}
 
 			if(gameData.state === "complete")

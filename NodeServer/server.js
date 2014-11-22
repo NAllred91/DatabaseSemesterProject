@@ -9,6 +9,7 @@
 	var setup = require('./setup.js');
 	var paths = setup();
 	var dbHelperApp = require('./DatabaseInterface.js');
+	
 	// A map that will be used to link socket.id's to usernames.
 	var idMap = {};
 
@@ -58,7 +59,7 @@
 	app.all('*', function(req, res, next)
 	{
 		var url = req.url;
-		
+
 		if((htmlRegExp.test(url) || cssRegExp.test(url) || jsRegExp.test(url) || pngRegExp.test(url)) || config.logNetworkTraffic === false)
 		{
 			next();

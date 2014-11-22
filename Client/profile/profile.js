@@ -10,10 +10,11 @@ var mainProfileView = function(onReady, username, socket, onLoadGame)
 	]
 
 	var html = [
-		'profile.html',
+		'profileContainer.html',
 		'usersProfile.html',
 		'usersGame.html',
-		'stats.html'
+		'stats.html',
+		'joinDate.html'
 	]
 
 	var css = [
@@ -26,7 +27,7 @@ var mainProfileView = function(onReady, username, socket, onLoadGame)
 	var ready = _.after(length, function()
 	{		
 		loadProfile = profileView(socket, username, templates, onLoadGame);
-		element = $(templates.profile());
+		element = $(templates.profileContainer());
 		onReady();
 	});
 

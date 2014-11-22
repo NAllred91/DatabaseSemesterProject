@@ -26,6 +26,7 @@
 .profileContainer .activeGamesContainer
 {
 	margin-left: 1.5%;
+	clear: left;
 }
 
 .profileContainer .completedGamesContainer
@@ -65,7 +66,16 @@
 	margin-bottom: -1%;
 }
 
-.profileContainer .stats
+.profileContainer .statsContainer
+{
+	float: left;
+	clear: left;
+	margin-left: 1.5%;
+
+}
+
+.profileContainer .stats,
+.profileContainer .joinDate
 {
 	border-style: solid;
 	border-width: 2px;
@@ -75,6 +85,12 @@
 .profileContainer .stat
 {
 	margin-left: 4%;
+}
+
+.profileContainer .joinDateContainer
+{
+	float: left;
+	margin-left: 1.5%;
 }
 
 .profileContainer .onlineIndicator
@@ -100,7 +116,8 @@
 	float: right;
 }
 
-.profileContainer .stats .statsTitle
+.profileContainer .stats .statsTitle,
+.profileContainer .joinDate .joinDateTitle
 {
 	width: 88%;
 	margin-top: 6%;

@@ -13,6 +13,7 @@ var profileView = function(socket, username, templates, onLoadGame)
 	{
 		console.log("click")
 		socket.emit('requestGame', WhoIsThis);
+		onLoadGame();
 	});
 
 	$('body').on('click', '#refreshProfile', function(event)
@@ -37,6 +38,7 @@ var profileView = function(socket, username, templates, onLoadGame)
 		element.find('#completedGamesScrollArea').empty();
 		element.find('#statsContainer').empty();
 		element.find('#onlineIndicator').empty();
+		element.find('#joinDateContainer').empty();
 
 		element.find('#username').append(profileName);
 		
@@ -96,6 +98,8 @@ var profileView = function(socket, username, templates, onLoadGame)
 				loses: info.loses,
 				draws: info.draws
 			}));
+
+			element.find('#joinDateContainer').append(templates.joinDate());
 
 			if(info.connectionCount > 0)
 			{
