@@ -1,4 +1,4 @@
-var mainProfileView = function(onReady, socket, onLoadGame)
+var mainProfileView = function(onReady, username, socket, onLoadGame)
 {
 	var templates = {};
 	var element;
@@ -23,7 +23,7 @@ var mainProfileView = function(onReady, socket, onLoadGame)
 	var length = scripts.length + html.length + css.length;
 
 	// Wait for all of the server requests that need to be made.
-	var ready = _.after(length + 1, function()
+	var ready = _.after(length, function()
 	{		
 		loadProfile = profileView(socket, username, templates, onLoadGame);
 		element = $(templates.profile());
@@ -64,14 +64,6 @@ var mainProfileView = function(onReady, socket, onLoadGame)
 		$('head').append( $('<link rel="stylesheet" type="text/css" />').attr('href', style));
 		ready();
 	});
-
-	// Retrieve your username
-	$.get('/username', function(res)
-	{
-		username = res.user;
-		ready();
-	});
-
 
 	var layout = function(userId)
 	{

@@ -1,5 +1,5 @@
 // Code for the GameRoom view
-var uttView = function(onReady, socket)
+var uttView = function(onReady, username, socket)
 {
 	var templates = {};
 	var element;
@@ -33,7 +33,7 @@ var uttView = function(onReady, socket)
 	var length = scripts.length + html.length + css.length;
 
 	// Wait for all of the server requests that need to be made.
-	var ready = _.after(length + 1, function()
+	var ready = _.after(length, function()
 	{		
 		loadGame = uttGameLogic(socket, username, templates, onLoadChat);
 		chatRoom = uttChatRoom(socket, username, templates, onLoadGame);
@@ -81,13 +81,6 @@ var uttView = function(onReady, socket)
 	_.each(css, function(style)
 	{
 		$('head').append( $('<link rel="stylesheet" type="text/css" />').attr('href', style));
-		ready();
-	});
-
-	// Retrieve your username
-	$.get('/username', function(res)
-	{
-		username = res.user;
 		ready();
 	});
 

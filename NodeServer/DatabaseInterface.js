@@ -192,7 +192,7 @@
 	{
 		var db = this.db;
 
-		var queryTemplate = _.template("INSERT INTO USERS (userName, password, connectionCount) VALUES ('<%= userName %>','<%= password %>',0)");
+		var queryTemplate = _.template("INSERT INTO Users (userName, password, connectionCount) VALUES ('<%= userName %>','<%= password %>',0)");
 		
 		var databaseCall = queryTemplate(
 		{
@@ -475,7 +475,7 @@
 		var db = this.db;
 		var now = getMySQLTimeStamp();
 
-		var queryTemplate = _.template("UPDATE Games SET state = 'active', playableGrid = 0, activePlayer = '<%= activePlayer %>', startTime = '<%= now %>' WHERE gameId = '<%= gameId %>'");
+		var queryTemplate = _.template("UPDATE Games SET state = 'active', playableGrid = 0, activePlayer = '<%= activePlayer %>', startTime = '<%= now %>', lastMoveTime = '<%= now %>' WHERE gameId = '<%= gameId %>'");
 
 		var databaseCall = queryTemplate(
 		{
@@ -600,6 +600,31 @@
 		db.query(databaseCall, function(err, result)
 		{
 			callback(result || []);
+		});
+	}
+
+	databaseInterface.prototype.addNetworkLog = function(ip, username, url, method, userAgent, body)
+	{
+		var db = this.db;
+
+		var queryTemplate = _.template("INSERT INTO NetworkLog (ipAddress, username, url, method, userAgent, body) VALUES ('<%= ip %>','<%= username %>','<%= url %>','<%= method %>','<%= userAgent %>','<%= body %>')");
+	
+		var databaseCall = queryTemplate(
+		{
+			ip: ip,
+			username: username,
+			url: url,
+			method: method,
+			userAgent: userAgent,
+			body: body
+		});
+
+		db.query(databaseCall, function(err)
+		{
+			if(err)
+			{
+				console.log("Database Error: Adding network log failed..", err);
+			}
 		});
 	}
 

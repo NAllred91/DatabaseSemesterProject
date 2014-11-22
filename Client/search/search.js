@@ -1,5 +1,5 @@
 // Code for search
-var mainSearchView = function(onReady, socket, onLoadProfile)
+var mainSearchView = function(onReady, username, socket, onLoadProfile)
 {
 	var templates = {};
 	var element;
@@ -26,7 +26,7 @@ var mainSearchView = function(onReady, socket, onLoadProfile)
 	var length = scripts.length + html.length + css.length;
 
 	// Wait for all of the server requests that need to be made.
-	var ready = _.after(length + 1, function()
+	var ready = _.after(length, function()
 	{		
 		loadSearch = searchView(socket, username, templates, onLoadResults);
 		loadResults = resultsView(socket, username, templates, onLoadProfile, onLoadSearch);
@@ -75,14 +75,6 @@ var mainSearchView = function(onReady, socket, onLoadProfile)
 		$('head').append( $('<link rel="stylesheet" type="text/css" />').attr('href', style));
 		ready();
 	});
-
-	// Retrieve your username
-	$.get('/username', function(res)
-	{
-		username = res.user;
-		ready();
-	});
-
 
 	var layout = function()
 	{

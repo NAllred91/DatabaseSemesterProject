@@ -3,6 +3,11 @@
 	// The main url for the site.
 	var baseURL = "http://localhost:8001";
 
+	// The different views.
+	var uttElement;
+	var searchElement;
+	var profileElement;
+
 	// Wait for all the applications to be ready,
 	// and wait for the DOM to be ready.
 	var onReady = _.after(4, function(){
@@ -61,6 +66,11 @@
 		});
 	});
 
+	// Enable caching of scripts.
+	$.ajaxSetup({
+	  cache: true
+	});
+
 	var onLoadProfile = function(username)
 	{
 		$('#app').empty();
@@ -90,6 +100,11 @@
 			{
 				username = res.user;
 				socket.emit('identify', username);
+
+				// Load the various application views.
+				uttElement = uttView(onReady, username, socket);
+				searchElement = mainSearchView(onReady, username, socket, onLoadProfile);
+				profileElement = mainProfileView(onReady, username, socket, onLoadGame);
 				onReady();
 			});
 	});
@@ -111,12 +126,6 @@
 	}
 
 	ping();
-	
-
-	// Load the various application views.
-	var uttElement = uttView(onReady, socket);
-	var searchElement = mainSearchView(onReady, socket, onLoadProfile);
-	var profileElement = mainProfileView(onReady, socket, onLoadGame);
 	
 
 }())

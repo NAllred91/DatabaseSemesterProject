@@ -39,6 +39,7 @@ var profileView = function(socket, username, templates, onLoadGame)
 		element.find('#onlineIndicator').empty();
 
 		element.find('#username').append(profileName);
+		
 		$.get('/utt/CompleteGames/' + profileName, function(games)
 		{
 			_.each(games, function(game)
