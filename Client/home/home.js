@@ -7,6 +7,7 @@
 	var uttElement;
 	var searchElement;
 	var profileElement;
+	var forumElement
 
 	// Wait for all the applications to be ready,
 	// and wait for the DOM to be ready.
@@ -52,16 +53,10 @@
 				$('#app').append(uttElement.layout());
 			});
 
-			$("#editProfile").on('click', function()
-			{
-				$('#app').empty();
-				$('#app').append();
-			});
-
 			$("#forum").on('click', function()
 			{
 				$('#app').empty();
-				$('#app').append();
+				$('#app').append(forumElement.layout());
 			});
 		});
 	});
@@ -105,11 +100,11 @@
 				uttElement = uttView(onReady, username, socket);
 				searchElement = mainSearchView(onReady, username, socket, onLoadProfile);
 				profileElement = mainProfileView(onReady, username, socket, onLoadGame);
-				onReady();
+				forumElement = mainForumView(onReady, username, socket);
 			});
 	});
 
-	// Start pinging to prevent our session cookie from timing out.
+	// Start pinging to prevent our session from timing out.
 	var ping = function()
 	{
 		$.get('/ping', function()

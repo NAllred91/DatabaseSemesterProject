@@ -9,7 +9,8 @@
 			'./utt/routes.js',
 			'./uttBot/routes.js',
 			'./search/routes.js',
-			'./profile/routes.js'
+			'./profile/routes.js',
+			'./forum/routes.js'
 		]
 	}
 

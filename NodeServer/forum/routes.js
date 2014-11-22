@@ -1,5 +1,6 @@
 (function()
 {
+	var express = require('express');
 	var setup = function(app, dbHelper, io)
 	{
 		app.use(express.static(__dirname + '/../../Client/forum'));
