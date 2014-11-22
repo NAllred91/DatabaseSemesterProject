@@ -323,7 +323,6 @@
 						var activePlayer;
 						var opponentName;
 						var state = "complete";
-						var now = new Date().getTime()
 
 						// If no one won, switch the players.
 						if(!wonBy && !draw)
@@ -380,6 +379,8 @@
 								return;
 							}
 
+							var now = new Date();
+
 							callback();
 							io.sockets.in(gameId).emit("gameUpdate", 
 								{
@@ -392,7 +393,7 @@
 									playableGrid: appliedMove.playableGrid,
 									state: state,
 									to: game.to,
-									lastMoveTime: now,
+									lastMoveTime: new Date(now.getTime() + (now.getTimezoneOffset() * 60000)),
 									wonBy: wonBy,
 							});
 							var myIds = idMap[name];

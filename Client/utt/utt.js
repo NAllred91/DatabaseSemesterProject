@@ -23,7 +23,9 @@ var uttView = function(onReady, username, socket)
 		'onlineUser.html',
 		'xImage.html',
 		'oImage.html',
-		'players.html'
+		'players.html',
+		'claimCountDown.html',
+		'claimVictory.html'
 	]
 
 	var css = [

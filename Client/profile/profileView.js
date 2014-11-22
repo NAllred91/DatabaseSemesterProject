@@ -99,7 +99,10 @@ var profileView = function(socket, username, templates, onLoadGame)
 				draws: info.draws
 			}));
 
-			element.find('#joinDateContainer').append(templates.joinDate());
+			element.find('#joinDateContainer').append(templates.joinDate(
+			{
+				joinDate: moment(new Date(info.joinDate)).format('MMMM Do YYYY, h:mm a')
+			}));
 
 			if(info.connectionCount > 0)
 			{

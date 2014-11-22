@@ -36,7 +36,7 @@
 	{
 		var db = this.db;
 
-		var queryTemplate = _.template("SELECT username, wins, loses, draws, connectionCount FROM Users WHERE username = '<%= username %>'");
+		var queryTemplate = _.template("SELECT username, wins, loses, draws, connectionCount, joinDate FROM Users WHERE username = '<%= username %>'");
 
 		var databaseCall = queryTemplate(
 		{
@@ -192,12 +192,13 @@
 	{
 		var db = this.db;
 
-		var queryTemplate = _.template("INSERT INTO Users (userName, password, connectionCount) VALUES ('<%= userName %>','<%= password %>',0)");
+		var queryTemplate = _.template("INSERT INTO Users (userName, password, joinDate, connectionCount) VALUES ('<%= userName %>','<%= password %>','<%= joinDate %>',0)");
 		
 		var databaseCall = queryTemplate(
 		{
 			userName: userName,
-			password: password
+			password: password,
+			joinDate: getMySQLTimeStamp()
 		});
 
 		db.query(databaseCall, function(err)

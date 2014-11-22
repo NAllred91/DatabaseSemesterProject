@@ -249,14 +249,69 @@ var uttGameLogic = function(socket, username, templates, onLoadChat)
 	{	
 		gameData = data;
 		var now = new Date();
-		if((now.getTime() + (now.getTimezoneOffset() * 60000)) - new Date(data.lastMoveTime).getTime() > 10000 && data.activePlayer !== username && (username === data.to || username === data.from) && data.state === "active" && data.lastMoveTime)
+		var lastMoveGMT = new Date(data.lastMoveTime);
+		var lastMoveLocal = new Date(lastMoveGMT.getTime() - (lastMoveGMT.getTimezoneOffset() * 60000));
+		var victoryTimeLocal = new Date(lastMoveLocal.getTime() + 86400000);
+
+		// console.log(now)
+		// console.log(data.lastMoveTime)
+		// console.log(lastMoveGMT)
+		// console.log(lastMoveLocal)
+		console.log("IN")
+		console.log(data)
+		 console.log(victoryTimeLocal)
+
+		element.find('.claimVictoryContainer').empty();
+
+console.log(data.activePlayer)
+console.log(username)
+console.log(victoryTimeLocal.getTime() - now.getTime())
+		if(data.activePlayer === username || (data.to !== username && data.from !== username))
 		{
-			element.find('.claimVictoryButton').show();
+			var opponent;
+			if(data.to === username)
+			{
+				opponent = data.from;
+			}
+			else
+			{
+				opponent = data.to;
+			}
+
+			if(victoryTimeLocal.getTime() - now.getTime() < 0 &&  data.state === "active" && data.lastMoveTime)
+			{
+
+				element.find('.claimVictoryContainer').append(templates.claimCountDown(
+					{
+						timeUntil: opponent + " can claim victory!"
+					}));
+			}
+			else
+			{
+				element.find('.claimVictoryContainer').append(templates.claimCountDown(
+					{
+						timeUntil: opponent + " can claim victory " + moment(victoryTimeLocal).fromNow()
+					}));
+			}
 		}
 		else
 		{
-			element.find('.claimVictoryButton').hide();
+			if(victoryTimeLocal.getTime() - now.getTime() < 0 &&  data.state === "active" && data.lastMoveTime)
+			{
+
+				element.find('.claimVictoryContainer').append(templates.claimVictory());
+			}
+			else
+			{
+				console.log("vic")
+				console.log(victoryTimeLocal)
+				element.find('.claimVictoryContainer').append(templates.claimCountDown(
+					{
+						timeUntil: "You can claim victory " + moment(victoryTimeLocal).fromNow()
+					}));
+			}
 		}
+
 		if(data.activePlayer === username)
 		{
 			element.find('#turnIndicator').empty();

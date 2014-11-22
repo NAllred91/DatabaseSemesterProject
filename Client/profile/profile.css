@@ -64,6 +64,7 @@
 	text-align: center;
 	font-size: 12vh;
 	margin-bottom: -1%;
+	clear: right;
 }
 
 .profileContainer .statsContainer
@@ -91,6 +92,11 @@
 {
 	float: left;
 	margin-left: 1.5%;
+}
+
+.profileContainer .joinDateStamp
+{
+	margin-left: 4%;
 }
 
 .profileContainer .onlineIndicator

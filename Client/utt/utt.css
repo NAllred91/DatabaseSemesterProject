@@ -264,6 +264,7 @@
 	margin-top: 4vh;
 	text-align: center;
 	font-size: 7vh;
+	clear: right;
 }
 
 .uttContainer .turnIndicator
@@ -278,9 +279,10 @@
 	width: 98%;
 }
 
-.uttContainer .active
+.uttContainer .claimVictoryContainer
 {
-
+	text-align: center;
+	margin-bottom: 2vh;
 }
 
 .uttContainer .claimVictoryButton
