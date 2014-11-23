@@ -91,7 +91,8 @@ var profileView = function(socket, username, templates, onLoadGame)
 
 		$.get('/profile/getUserInfo/' + profileName, function(info)
 		{
-			console.log(info)
+			var joinDateGMT = new Date(info.joinDate);
+			console.log(joinDateGMT)
 			element.find('#statsContainer').append(templates.stats(
 			{
 				wins: info.wins,
@@ -101,7 +102,7 @@ var profileView = function(socket, username, templates, onLoadGame)
 
 			element.find('#joinDateContainer').append(templates.joinDate(
 			{
-				joinDate: moment(new Date(info.joinDate)).format('MMMM Do YYYY, h:mm a')
+				joinDate: moment(new Date(joinDateGMT.getTime() - (joinDateGMT.getTimezoneOffset() * 60000))).format('MMMM Do YYYY, h:mm a')
 			}));
 
 			if(info.connectionCount > 0)
