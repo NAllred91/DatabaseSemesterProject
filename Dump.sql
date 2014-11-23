@@ -90,32 +90,13 @@ DROP TABLE IF EXISTS `Posts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Posts` (
-  `author` varchar(15) NOT NULL,
+  `poster` varchar(15) NOT NULL,
   `post` longtext NOT NULL,
   `postTime` varchar(45) NOT NULL,
-  `threadId` varchar(20) NOT NULL,
-  PRIMARY KEY (`author`,`postTime`),
+  `threadId` varchar(36) NOT NULL,
+  PRIMARY KEY (`poster`,`postTime`),
   KEY `threadID_idx` (`threadId`),
-  CONSTRAINT `author` FOREIGN KEY (`author`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `threadID` FOREIGN KEY (`threadId`) REFERENCES `Threads` (`threadId`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `ThreadViews`
---
-
-DROP TABLE IF EXISTS `ThreadViews`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `ThreadViews` (
-  `userName` varchar(15) NOT NULL,
-  `viewTime` datetime NOT NULL,
-  `viewedThreadId` varchar(20) NOT NULL,
-  PRIMARY KEY (`userName`,`viewTime`),
-  KEY `threadId_idx` (`viewedThreadId`),
-  CONSTRAINT `thread` FOREIGN KEY (`viewedThreadId`) REFERENCES `Threads` (`threadId`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `user` FOREIGN KEY (`userName`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `author` FOREIGN KEY (`poster`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -127,12 +108,31 @@ DROP TABLE IF EXISTS `Threads`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Threads` (
-  `threadId` varchar(20) NOT NULL,
+  `threadId` varchar(36) NOT NULL,
   `originalPoster` varchar(15) NOT NULL,
   `lastPostTime` datetime NOT NULL,
   `lastPoster` varchar(15) NOT NULL,
   `title` varchar(20) NOT NULL,
+  `createdTime` datetime NOT NULL,
+  `views` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`threadId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `UserThreadViews`
+--
+
+DROP TABLE IF EXISTS `UserThreadViews`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `UserThreadViews` (
+  `userName` varchar(15) NOT NULL,
+  `viewTime` datetime NOT NULL,
+  `viewedThreadId` varchar(36) NOT NULL,
+  PRIMARY KEY (`userName`,`viewedThreadId`),
+  KEY `threadId_idx` (`viewedThreadId`),
+  CONSTRAINT `user` FOREIGN KEY (`userName`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -150,6 +150,7 @@ CREATE TABLE `Users` (
   `loses` int(11) unsigned NOT NULL DEFAULT '0',
   `connectionCount` int(10) unsigned NOT NULL,
   `draws` int(11) unsigned NOT NULL DEFAULT '0',
+  `joinDate` datetime NOT NULL,
   PRIMARY KEY (`userName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -163,4 +164,4 @@ CREATE TABLE `Users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-11-22  0:46:03
+-- Dump completed on 2014-11-23 16:00:33
