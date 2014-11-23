@@ -4,17 +4,22 @@ var mainForumView = function(onReady, username, socket, onLoadProfile)
 	var templates = {};
 	var element;
 	var username;
-	var loadResults;
-	var loadSearch;
+	var loadForum;
 
 	var scripts = [
+		'forumView.js',
+		'createThreadView.js'
 	]
 
 	var html = [
+		'forumContainer.html',
+		'createThread.html',
+		'threadInfo.html',
 		'forum.html'
 	]
 
 	var css = [
+		'forum.css'
 	]
 
 	var length = scripts.length + html.length + css.length;
@@ -22,9 +27,9 @@ var mainForumView = function(onReady, username, socket, onLoadProfile)
 	// Wait for all of the server requests that need to be made.
 	var ready = _.after(length, function()
 	{		
-		// loadSearch = searchView(socket, username, templates, onLoadResults);
-		// loadResults = resultsView(socket, username, templates, onLoadProfile, onLoadSearch);
-		element = $(templates.forum());
+		loadCreateThread = createThreadView(socket, username, templates, onLoadForum);
+		loadForum = forumView(socket, username, templates, onLoadProfile, onLoadThread, onLoadCreateThread);
+		element = $(templates.forumContainer());
 		onReady();
 	});
 
@@ -32,7 +37,21 @@ var mainForumView = function(onReady, username, socket, onLoadProfile)
 	var onLoadForum = function()
 	{
 		element.empty();
-		element.append("Forum to come!");
+		element.append(loadForum());
+	}
+
+	// Called to load a thread.
+	var onLoadThread = function()
+	{
+		element.empty();
+		element.append("loadin a thread");
+	}
+
+	// Called to create a thread.
+	var onLoadCreateThread = function()
+	{
+		element.empty();
+		element.append(loadCreateThread());
 	}
 
 

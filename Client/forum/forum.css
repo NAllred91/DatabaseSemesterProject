@@ -1,0 +1,58 @@
+.forumContainer .originalPost
+{
+	width: 100%;
+	height: 37vw;
+	font-size: 2vw;
+	resize: none;
+}
+
+.forumContainer .enterTitle
+{
+	width: 41vw;
+}
+
+.forumContainer .newTitle
+{
+	margin-bottom: 2vh;
+}
+
+.forumContainer .forumTitle
+{
+	text-align: center;
+	font-size: 7vw;
+	margin-bottom: 60px;
+}
+
+.forumContainer .title
+{
+	display: inline-block;
+	width: 15vw;
+	text-align: center;
+}
+
+.forumContainer .posts
+{
+	display: inline-block;
+	width: 15vw;
+	text-align: center;
+}
+
+.forumContainer .views
+{
+	display: inline-block;
+	width: 15vw;
+	text-align: center;
+}
+
+.forumContainer .lastPost
+{
+	display: inline-block;
+	width: 15vw;
+	text-align: center;
+}
+
+.forumContainer .threadInfo
+{
+	border-style: solid;
+	margin-bottom: 15px;
+}

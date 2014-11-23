@@ -13,6 +13,7 @@ var mainSearchView = function(onReady, username, socket, onLoadProfile)
 	]
 
 	var html = [
+		'searchContainer.html',
 		'search.html',
 		'results.html',
 		'result.html',
@@ -30,7 +31,7 @@ var mainSearchView = function(onReady, username, socket, onLoadProfile)
 	{		
 		loadSearch = searchView(socket, username, templates, onLoadResults);
 		loadResults = resultsView(socket, username, templates, onLoadProfile, onLoadSearch);
-		element = $(templates.search());
+		element = $(templates.searchContainer());
 		onReady();
 	});
 
