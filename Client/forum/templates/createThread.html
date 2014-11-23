@@ -1,11 +1,13 @@
 <div class="createThreadContainer" id="craeteThreadContainer">
 	<div class="newTitle">
 		<label>Title:</label>
-		<input type="text" name="title" class="enterTitle"/>
+		<input type="text" name="title" id="title" class="enterTitle"/>
+		<span class="titleError" id="titleError"></span>
 		<br/>
 	</div>
 	<textarea class="originalPost" id="originalPost"></textarea>
 	<div>
 		<input type="button" id="submitNewThread" value="Create Thread" />
+		<div class="bodyError" id="bodyError"></div>
 	</div>
 </div>

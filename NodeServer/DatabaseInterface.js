@@ -75,7 +75,7 @@
 			}
 			else
 			{
-				if(result[0]['COUNT(*)'] === 1)
+				if(result[0] && result[0]['COUNT(*)'] === 1)
 				{
 					callback(result[0]['userName']);
 				}
@@ -625,6 +625,176 @@
 			if(err)
 			{
 				console.log("Database Error: Adding network log failed..", err);
+			}
+		});
+	}
+
+	databaseInterface.prototype.addNewThread = function(username, title, callback)
+	{
+		var db = this.db;
+		var threadId = uuid();
+
+		var queryTemplate = _.template("INSERT INTO Threads (originalPoster, lastPoster, createdTime, lastPostTime, title, threadId) VALUES ('<%= username %>','<%= username %>','<%= now %>','<%= now %>', '<%= title %>','<%= threadId %>')");
+		
+		var databaseCall = queryTemplate(
+		{
+			username: username,
+			title: title,
+			now: getMySQLTimeStamp(),
+			threadId: threadId
+		});
+
+		db.query(databaseCall, function(err)
+		{
+			if(err)
+			{
+				console.log("Database Error: Adding new thread failed..", err);
+				callback(err);
+			}
+			else
+			{
+				callback(null, threadId);
+			}
+		});
+	}
+
+	databaseInterface.prototype.addNewPost = function(threadId, username, body, callback)
+	{
+		var db = this.db;
+
+		var queryTemplate = _.template("INSERT INTO Posts (threadId, poster, post, postTime) VALUES ('<%= threadId %>','<%= poster %>','<%= post %>','<%= postTime %>')");
+		
+		var databaseCall = queryTemplate(
+		{
+			threadId: threadId,
+			poster: username,
+			post: body,
+			postTime: getMySQLTimeStamp()
+		});
+
+		db.query(databaseCall, function(err)
+		{
+			if(err)
+			{
+				console.log("Database Error: Adding new post failed..", err);
+				callback(err);
+			}
+			else
+			{
+				callback();
+			}
+		});
+	}
+
+	databaseInterface.prototype.getThreads = function(callback)
+	{
+		var db = this.db;
+
+		var queryTemplate = _.template("SELECT * FROM Threads ORDER BY lastPostTime DESC");
+
+		var databaseCall = queryTemplate();
+
+		db.query(databaseCall, function(err, results)
+		{
+			if(err)
+			{
+				console.log("Database Error: Getting threads failed..", err);
+			}
+
+			callback(err, results)
+		});
+	}
+
+	databaseInterface.prototype.getThreadPostCount = function(threadId, callback)
+	{
+		var db = this.db;
+
+		var queryTemplate = _.template("SELECT COUNT(*) FROM Posts WHERE threadId='<%= threadId %>'");
+
+		var databaseCall = queryTemplate(
+		{
+			threadId: threadId
+		});
+
+		db.query(databaseCall, function(err, result)
+		{
+			var count = 0;
+			if(err)
+			{
+				console.log("Database Error: Getting thread post count failed..", err);
+			}
+			if(result[0] && result[0]['COUNT(*)'])
+			{
+				count = result[0]['COUNT(*)']
+			}
+
+			callback(err, count);
+		});
+	}
+
+	databaseInterface.prototype.incrementThreadViewCount = function(threadId)
+	{
+		var db = this.db;
+
+		var queryTemplate = _.template("UPDATE Threads SET views=views + 1 WHERE threadId='<%= threadId %>'");
+
+		var databaseCall = queryTemplate(
+		{
+			threadId: threadId
+		});
+
+		db.query(databaseCall, function(err)
+		{
+			if(err)
+			{
+				console.log("Database Error: Incrementing thread view count failed..", err);
+			}
+		});
+	}
+
+	databaseInterface.prototype.updateUserThreadViews = function(username, threadId)
+	{
+		var db = this.db;
+
+		var queryTemplate = _.template("INSERT INTO UserThreadViews (username, viewTime, viewedThreadId) VALUES('<%= username %>','<%= now %>','<%= threadId %>') ON DUPLICATE KEY UPDATE viewTime='<%= now %>'");
+	
+		var databaseCall = queryTemplate(
+		{
+			threadId: threadId,
+			username: username,
+			now: getMySQLTimeStamp()
+		});
+
+		db.query(databaseCall, function(err)
+		{
+			if(err)
+			{
+				console.log("Database Error: Updating user thread views failed..", err);
+			}
+		});
+	}
+
+	databaseInterface.prototype.getUserThreadViews = function(username, callback)
+	{
+		var db = this.db;
+
+		var queryTemplate = _.template("SELECT viewedThreadId, viewTime FROM userThreadViews WHERE username='<%= username %>'");
+
+		var databaseCall = queryTemplate(
+		{
+			username: username
+		});
+
+		db.query(databaseCall, function(err, results)
+		{
+			if(err)
+			{
+				console.log("Database Error: Getting user thread views failed..", err);
+				callback([]);
+			}
+			else
+			{
+				callback(results);
 			}
 		});
 	}

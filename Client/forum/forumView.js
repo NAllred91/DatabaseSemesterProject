@@ -8,31 +8,47 @@ var forumView = function(socket, username, templates, onLoadProfile, onLoadThrea
 		onCreateThread();
 	});
 
+	$('body').on('click', '#viewThread', function(event)
+	{
+		onLoadThread(event.currentTarget.value);
+	});
+
 	var initializeForum = function()
 	{
 		element.find('#threadContainer').empty();
 
-		$.get('/forum/getThreads', function(threads)
+		$.get('/forum/getThreadViews', function(views)
 		{
-			console.log(threads)
-			_.each(threads, function(thread)
+			console.log(views)
+			$.get('/forum/getThreads', function(threads)
 			{
-				var threadInfoElement = $(templates.threadInfo(
+				_.each(threads, function(thread)
 				{
-					title: "1",
-					originalPost: "2",
-					postCount: "3",
-					viewCount: "4",
-					lastPost: "5",
-					threadId: "6"
-				}));
+					var createdDate = new Date(thread.createdTime)
+					var localCreatedDate = new Date(createdDate.getTime() - (createdDate.getTimezoneOffset() * 60000))
+					var threadInfoElement = $(templates.threadInfo(
+					{
+						title: thread.title,
+						originalPost: "Created by " + thread.originalPoster + " on " + moment(localCreatedDate).format("dddd, MMMM Do YYYY, h:mm a"),
+						postCount: thread.posts,
+						viewCount: thread.views,
+						lastPost: "test",
+						threadId: thread.threadId
+					}));
 
-				threadInfoElement.find("#unreadPostsIndicator").append(templates.redDot())
-				element.find('#threadContainer').append(threadInfoElement);
+					if(views[thread.threadId] && new Date(views[thread.threadId]).getTime() > new Date(thread.lastPostTime).getTime())
+					{
+						threadInfoElement.find("#unreadPostsIndicator").append(templates.greenDot());
+					}
+					else
+					{
+						threadInfoElement.find("#unreadPostsIndicator").append(templates.redDot());
+					}
+					
+					element.find('#threadContainer').append(threadInfoElement);
+				});
 			});
-
-
-		})
+		});
 	};
 
 	var loadForum = function()
