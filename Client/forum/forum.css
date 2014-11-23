@@ -51,8 +51,31 @@
 	text-align: center;
 }
 
+.forumContainer .unreadPostsIndicator
+{
+	display: inline-block;
+}
+
+.forumContainer .redDot,
+.forumContainer .greenDot
+{
+	width: 27px;
+	margin-left: 3vw;
+}
+
 .forumContainer .threadInfo
 {
 	border-style: solid;
 	margin-bottom: 15px;
+}
+
+.forumContainer .viewThread
+{
+	vertical-align: 60%;
+}
+
+.forumContainer .dotKey
+{
+	border-style: dotted;
+	margin-bottom: 60px;
 }

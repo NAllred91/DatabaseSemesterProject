@@ -17,15 +17,21 @@ var forumView = function(socket, username, templates, onLoadProfile, onLoadThrea
 			console.log(threads)
 			_.each(threads, function(thread)
 			{
-				element.find('#threadContainer').append(templates.threadInfo(
-					{
-						title: "1",
-						originalPost: "2",
-						postCount: "3",
-						viewCount: "4",
-						lastPost: "5"
-					}));
+				var threadInfoElement = $(templates.threadInfo(
+				{
+					title: "1",
+					originalPost: "2",
+					postCount: "3",
+					viewCount: "4",
+					lastPost: "5",
+					threadId: "6"
+				}));
+
+				threadInfoElement.find("#unreadPostsIndicator").append(templates.redDot())
+				element.find('#threadContainer').append(threadInfoElement);
 			});
+
+
 		})
 	};
 

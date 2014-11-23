@@ -3,5 +3,6 @@
 	<div class="posts"><%= postCount %></div>
 	<div class="views"><%= viewCount %></div>
 	<div class="lastPost"><%= lastPost %></div>
-	<input class="enterThread" id="enterThread" type="button" value="View Thread">
+	<button type="button" class="viewThread" value="<%= threadId %>">View Thread</button>
+	<div class="unreadPostsIndicator" id="unreadPostsIndicator"></div>
 </div>

@@ -15,6 +15,8 @@ var mainForumView = function(onReady, username, socket, onLoadProfile)
 		'forumContainer.html',
 		'createThread.html',
 		'threadInfo.html',
+		'redDot.html',
+		'greenDot.html',
 		'forum.html'
 	]
 
