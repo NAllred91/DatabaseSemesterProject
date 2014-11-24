@@ -83,12 +83,42 @@
 			}
 		});
 
+		app.post('/forum/newPost', function(req, res)
+		{
+			if(req.session && req.session.user && req.body)
+			{
+				var threadId = req.body.threadId;
+				var post = req.body.post;
+				var username = req.session.user;
+
+				dbHelper.addNewPost(threadId, username, post, function(err)
+				{
+					if(err)
+					{
+						res.sendStatus(500);
+					}
+					else
+					{
+						dbHelper.setLastPostTime(threadId);
+						res.sendStatus(201);
+					}
+				});
+			}
+			else
+			{
+				res.sendStatus(500);
+			}
+		});
+
 		app.get('/forum/threadPosts/:threadId', function(req, res)
 		{
 			dbHelper.incrementThreadViewCount(req.params.threadId)
 			dbHelper.updateUserThreadViews(req.session.user, req.params.threadId)
-			res.send(200);
-		})
+			dbHelper.getThreadPosts(req.params.threadId, function(posts)
+			{
+				res.send(posts);
+			});
+		});
 	}
 
 	module.exports = setup;

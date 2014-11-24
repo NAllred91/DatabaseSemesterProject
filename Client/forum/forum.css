@@ -26,7 +26,7 @@
 .forumContainer .title
 {
 	display: inline-block;
-	width: 15vw;
+	width: 22vw;
 	text-align: center;
 }
 
@@ -47,7 +47,7 @@
 .forumContainer .lastPost
 {
 	display: inline-block;
-	width: 15vw;
+	width: 23vw;
 	text-align: center;
 }
 
@@ -79,4 +79,42 @@
 	border-style: dotted;
 	margin-bottom: 60px;
 }
+
+.forumContainer .postsContainer
+{
+	border-style: dotted;
+}
+
+.forumContainer .post
+{
+	border-style: solid;
+	margin: 5px;
+}
+
+.forumContainer .threadTitle
+{
+	text-align: center;
+	font-size: 8vw;
+}
+
+.forumContainer .postReply
+{
+	margin-bottom: 5px;
+}
+
+.forumContainer .postHeader
+{
+	border-bottom-style: solid;
+}
+
+.forumContainer .replyText
+{
+	width: 99%;
+	height: 19vw;
+	resize: none;
+}
+
+.forumContainer .postBody
+{
+	margin: 1%;
 }

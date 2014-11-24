@@ -799,5 +799,52 @@
 		});
 	}
 
+	databaseInterface.prototype.getThreadPosts = function(threadId, callback)
+	{
+		var db = this.db;
+
+		var queryTemplate = _.template("SELECT poster, post, postTime FROM Posts WHERE threadId='<%= threadId %>' ORDER BY postTime ASC");
+
+		var databaseCall = queryTemplate(
+		{
+			threadId: threadId
+		});
+
+		db.query(databaseCall, function(err, results)
+		{
+			if(err)
+			{
+				console.log("Database Error: Getting thread posts failed..", err);
+				callback([]);
+			}
+			else
+			{
+				callback(results);
+			}
+
+		});
+	}
+
+	databaseInterface.prototype.setLastPostTime = function(threadId)
+	{
+		var db = this.db;
+
+		var queryTemplate = _.template("UPDATE Threads SET lastPostTime='<%= now %>' WHERE threadId='<%= threadId %>'");
+
+		var databaseCall = queryTemplate(
+		{
+			threadId: threadId,
+			now: getMySQLTimeStamp()
+		});
+
+		db.query(databaseCall, function(err)
+		{
+			if(err)
+			{
+				console.log("Database Error: Setting last post time failed..", err);
+			}
+		});
+	}
+
 	module.exports = databaseInterface;
 }());
