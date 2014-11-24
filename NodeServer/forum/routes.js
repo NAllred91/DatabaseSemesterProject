@@ -15,10 +15,10 @@
 			{
 				async.each(results, function(thread, callback)
 				{
-					dbHelper.getThreadPostCount(thread.threadId, function(err, count)
+					dbHelper.getThreadPostCount(thread.threadId, function(count)
 					{
 						thread.posts = count;
-						callback(err, thread);
+						callback(null, thread);
 					});
 				}, function(err, result)
 				{
@@ -99,7 +99,7 @@
 					}
 					else
 					{
-						dbHelper.setLastPostTime(threadId);
+						dbHelper.setLastPostTime(threadId, username);
 						res.sendStatus(201);
 					}
 				});

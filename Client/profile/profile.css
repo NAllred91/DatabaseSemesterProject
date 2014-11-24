@@ -76,7 +76,8 @@
 }
 
 .profileContainer .stats,
-.profileContainer .joinDate
+.profileContainer .joinDate,
+.profileContainer .postCount
 {
 	border-style: solid;
 	border-width: 2px;
@@ -88,10 +89,17 @@
 	margin-left: 4%;
 }
 
-.profileContainer .joinDateContainer
+.profileContainer .joinDateContainer,
+.profileContainer .postCountContainer
 {
 	float: left;
 	margin-left: 1.5%;
+}
+
+.profileContainer .postCountTotal
+{
+	text-align: center;
+	clear: left;
 }
 
 .profileContainer .joinDateStamp
@@ -123,7 +131,8 @@
 }
 
 .profileContainer .stats .statsTitle,
-.profileContainer .joinDate .joinDateTitle
+.profileContainer .joinDate .joinDateTitle,
+.profileContainer .postCount .postCountTitle
 {
 	width: 88%;
 	margin-top: 6%;

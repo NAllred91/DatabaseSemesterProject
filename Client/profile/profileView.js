@@ -39,6 +39,7 @@ var profileView = function(socket, username, templates, onLoadGame)
 		element.find('#statsContainer').empty();
 		element.find('#onlineIndicator').empty();
 		element.find('#joinDateContainer').empty();
+		element.find('#postCountContainer').empty();
 
 		element.find('#username').append(profileName);
 		
@@ -103,6 +104,11 @@ var profileView = function(socket, username, templates, onLoadGame)
 			element.find('#joinDateContainer').append(templates.joinDate(
 			{
 				joinDate: moment(new Date(joinDateGMT.getTime() - (joinDateGMT.getTimezoneOffset() * 60000))).format('MMMM Do YYYY, h:mm a')
+			}));
+
+			element.find('#postCountContainer').append(templates.postCount(
+			{
+				postCount: info.postCount
 			}));
 
 			if(info.connectionCount > 0)

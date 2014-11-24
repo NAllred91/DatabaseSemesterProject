@@ -728,7 +728,7 @@
 				count = result[0]['COUNT(*)']
 			}
 
-			callback(err, count);
+			callback(count);
 		});
 	}
 
@@ -825,15 +825,16 @@
 		});
 	}
 
-	databaseInterface.prototype.setLastPostTime = function(threadId)
+	databaseInterface.prototype.setLastPostTime = function(threadId, username)
 	{
 		var db = this.db;
 
-		var queryTemplate = _.template("UPDATE Threads SET lastPostTime='<%= now %>' WHERE threadId='<%= threadId %>'");
+		var queryTemplate = _.template("UPDATE Threads SET lastPostTime='<%= now %>', lastPoster='<%= username %>' WHERE threadId='<%= threadId %>'");
 
 		var databaseCall = queryTemplate(
 		{
 			threadId: threadId,
+			username: username,
 			now: getMySQLTimeStamp()
 		});
 
@@ -843,6 +844,33 @@
 			{
 				console.log("Database Error: Setting last post time failed..", err);
 			}
+		});
+	}
+
+	databaseInterface.prototype.getNumberOfPostForUser = function(username, callback)
+	{
+		var db = this.db;
+
+		var queryTemplate = _.template("SELECT COUNT(*) FROM Posts WHERE poster='<%= username %>'");
+
+		var databaseCall = queryTemplate(
+		{
+			username: username
+		});
+
+		db.query(databaseCall, function(err, result)
+		{
+			var count = 0;
+			if(err)
+			{
+				console.log("Database Error: Getting user post count failed..", err);
+			}
+			if(result[0] && result[0]['COUNT(*)'])
+			{
+				count = result[0]['COUNT(*)']
+			}
+
+			callback(count);
 		});
 	}
 

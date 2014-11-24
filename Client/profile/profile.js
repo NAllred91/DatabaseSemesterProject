@@ -14,7 +14,8 @@ var mainProfileView = function(onReady, username, socket, onLoadGame)
 		'usersProfile.html',
 		'usersGame.html',
 		'stats.html',
-		'joinDate.html'
+		'joinDate.html',
+		'postCount.html'
 	]
 
 	var css = [

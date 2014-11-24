@@ -10,7 +10,6 @@ var forumView = function(socket, username, templates, onLoadProfile, onLoadThrea
 
 	$('body').on('click', '#viewThread', function(event)
 	{
-		console.log($(event.currentTarget).data('title'))
 		onLoadThread(event.currentTarget.value, $(event.currentTarget).data('title'));
 	});
 
@@ -29,7 +28,7 @@ var forumView = function(socket, username, templates, onLoadProfile, onLoadThrea
 					var lastPostDate = new Date(thread.lastPostTime);
 					var localCreatedDate = new Date(createdDate.getTime() - (createdDate.getTimezoneOffset() * 60000))
 					var localLastPostDate = new Date(lastPostDate.getTime() - (lastPostDate.getTimezoneOffset() * 60000));
-					console.log(thread.createdTime)
+
 					var threadInfoElement = $(templates.threadInfo(
 					{
 						title: thread.title,

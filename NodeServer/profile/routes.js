@@ -10,7 +10,11 @@
 		{
 			dbHelper.getUserInformation(req.params.username, function(info)
 			{
-				res.send(info);
+				dbHelper.getNumberOfPostForUser(req.params.username, function(postCount)
+				{
+					info.postCount = postCount;
+					res.send(info);
+				});
 			});
 		});
 	}
