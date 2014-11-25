@@ -253,19 +253,8 @@ var uttGameLogic = function(socket, username, templates, onLoadChat)
 		var lastMoveLocal = new Date(lastMoveGMT.getTime() - (lastMoveGMT.getTimezoneOffset() * 60000));
 		var victoryTimeLocal = new Date(lastMoveLocal.getTime() + 86400000);
 
-		// console.log(now)
-		// console.log(data.lastMoveTime)
-		// console.log(lastMoveGMT)
-		// console.log(lastMoveLocal)
-		console.log("IN")
-		console.log(data)
-		 console.log(victoryTimeLocal)
-
 		element.find('.claimVictoryContainer').empty();
 
-console.log(data.activePlayer)
-console.log(username)
-console.log(victoryTimeLocal.getTime() - now.getTime())
 		if(data.activePlayer === username || (data.to !== username && data.from !== username))
 		{
 			var opponent;
@@ -286,12 +275,16 @@ console.log(victoryTimeLocal.getTime() - now.getTime())
 						timeUntil: opponent + " can claim victory!"
 					}));
 			}
-			else
+			else if(data.state === "active")
 			{
 				element.find('.claimVictoryContainer').append(templates.claimCountDown(
 					{
 						timeUntil: opponent + " can claim victory " + moment(victoryTimeLocal).fromNow()
 					}));
+			}
+			else
+			{
+				element.find('.claimVictoryContainer').empty();
 			}
 		}
 		else
@@ -301,7 +294,7 @@ console.log(victoryTimeLocal.getTime() - now.getTime())
 
 				element.find('.claimVictoryContainer').append(templates.claimVictory());
 			}
-			else
+			else if(data.state === "active")
 			{
 				console.log("vic")
 				console.log(victoryTimeLocal)
@@ -309,6 +302,10 @@ console.log(victoryTimeLocal.getTime() - now.getTime())
 					{
 						timeUntil: "You can claim victory " + moment(victoryTimeLocal).fromNow()
 					}));
+			}
+			else
+			{
+				element.find('.claimVictoryContainer').empty();
 			}
 		}
 

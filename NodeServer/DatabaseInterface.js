@@ -731,7 +731,7 @@
 			callback(count);
 		});
 	}
-
+// TODO REMOVE THIS NONSENSE!!!
 	databaseInterface.prototype.incrementThreadViewCount = function(threadId)
 	{
 		var db = this.db;
