@@ -7,7 +7,6 @@ var createThreadView = function(socket, username, templates, onLoadForum)
 
 	$('body').on('click', '#submitNewThread', function()
 	{
-		console.log("HIT")
 		element.find('#titleError').empty();
 		element.find('#bodyError').empty();
 		element.find('#title').empty();
