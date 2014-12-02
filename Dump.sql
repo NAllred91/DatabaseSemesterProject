@@ -39,8 +39,10 @@ CREATE TABLE `Games` (
   UNIQUE KEY `gameId_UNIQUE` (`gameId`),
   KEY `playerOne_idx` (`challenger`),
   KEY `playerTwo_idx` (`challengee`),
+  KEY `playersTurn_idx` (`activePlayer`),
   CONSTRAINT `playerOne` FOREIGN KEY (`challenger`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `playerTwo` FOREIGN KEY (`challengee`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `playerTwo` FOREIGN KEY (`challengee`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `playersTurn` FOREIGN KEY (`activePlayer`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -58,6 +60,7 @@ CREATE TABLE `Messages` (
   `gameId` varchar(45) DEFAULT NULL,
   KEY `sender_idx` (`sender`),
   KEY `gameId_idx` (`gameId`),
+  CONSTRAINT `game` FOREIGN KEY (`gameId`) REFERENCES `Games` (`gameId`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `sender` FOREIGN KEY (`sender`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -78,7 +81,9 @@ CREATE TABLE `NetworkLog` (
   `url` tinytext,
   `userAgent` mediumtext,
   `logId` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  PRIMARY KEY (`logId`)
+  PRIMARY KEY (`logId`),
+  KEY `loggedUser_idx` (`username`),
+  CONSTRAINT `loggedUser` FOREIGN KEY (`username`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=122 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -96,7 +101,8 @@ CREATE TABLE `Posts` (
   `threadId` varchar(36) NOT NULL,
   PRIMARY KEY (`poster`,`postTime`),
   KEY `threadID_idx` (`threadId`),
-  CONSTRAINT `author` FOREIGN KEY (`poster`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `author` FOREIGN KEY (`poster`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `parentThread` FOREIGN KEY (`threadId`) REFERENCES `Threads` (`threadId`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -115,7 +121,11 @@ CREATE TABLE `Threads` (
   `title` varchar(20) NOT NULL,
   `createdTime` datetime NOT NULL,
   `views` int(10) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`threadId`)
+  PRIMARY KEY (`threadId`),
+  KEY `firstPoster_idx` (`originalPoster`),
+  KEY `recentPoster_idx` (`lastPoster`),
+  CONSTRAINT `firstPoster` FOREIGN KEY (`originalPoster`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `recentPoster` FOREIGN KEY (`lastPoster`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -132,7 +142,8 @@ CREATE TABLE `UserThreadViews` (
   `viewedThreadId` varchar(36) NOT NULL,
   PRIMARY KEY (`userName`,`viewedThreadId`),
   KEY `threadId_idx` (`viewedThreadId`),
-  CONSTRAINT `user` FOREIGN KEY (`userName`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `user` FOREIGN KEY (`userName`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `viewedThread` FOREIGN KEY (`viewedThreadId`) REFERENCES `Threads` (`threadId`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -164,4 +175,4 @@ CREATE TABLE `Users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-12-02 12:26:55
+-- Dump completed on 2014-12-02 18:51:58
