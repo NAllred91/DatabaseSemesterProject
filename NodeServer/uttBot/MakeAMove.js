@@ -113,13 +113,13 @@
 		var cumulativeScore = .5;
 		var totalDataPoints = 1;
 		
-		/* 1 if you win the game.
+		// 1 if you win the game.
 		if(bigVictoryCheck(appliedMove.board) === x)
 		{
 			console.log(JSON.stringify(appliedMove.board))
 			console.log("BigVic")
 			return 1;
-		}*/
+		}
 		// 0 if you give the opponent the win.
 		if(opponentsMoveRating === 1)
 		{
