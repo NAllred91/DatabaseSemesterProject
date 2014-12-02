@@ -92,7 +92,7 @@ DROP TABLE IF EXISTS `Posts`;
 CREATE TABLE `Posts` (
   `poster` varchar(15) NOT NULL,
   `post` longtext NOT NULL,
-  `postTime` varchar(45) NOT NULL,
+  `postTime` datetime NOT NULL,
   `threadId` varchar(36) NOT NULL,
   PRIMARY KEY (`poster`,`postTime`),
   KEY `threadID_idx` (`threadId`),
@@ -164,4 +164,4 @@ CREATE TABLE `Users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-11-23 16:00:33
+-- Dump completed on 2014-12-02 12:26:55
