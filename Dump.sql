@@ -39,10 +39,8 @@ CREATE TABLE `Games` (
   UNIQUE KEY `gameId_UNIQUE` (`gameId`),
   KEY `playerOne_idx` (`challenger`),
   KEY `playerTwo_idx` (`challengee`),
-  KEY `playersTurn_idx` (`activePlayer`),
   CONSTRAINT `playerOne` FOREIGN KEY (`challenger`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `playerTwo` FOREIGN KEY (`challengee`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `playersTurn` FOREIGN KEY (`activePlayer`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `playerTwo` FOREIGN KEY (`challengee`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -175,4 +173,4 @@ CREATE TABLE `Users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-12-02 18:51:58
+-- Dump completed on 2014-12-03 20:35:01
