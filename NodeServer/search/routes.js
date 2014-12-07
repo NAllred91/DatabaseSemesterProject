@@ -13,6 +13,12 @@
 				res.send(results);
 			});
 		});
+
+		// Catches an empty query. probably bad form...
+		app.get('/search/', function(req, res)
+		{
+			res.send([]);
+		});
 	}
 
 	module.exports = setup;
