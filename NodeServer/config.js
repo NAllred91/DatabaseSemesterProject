@@ -1,2 +1,2 @@
 exports.port = 6591;
-exports.logNetworkTraffic = false;
+exports.logNetworkTraffic = true;
