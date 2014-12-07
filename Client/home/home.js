@@ -1,7 +1,7 @@
 (function()
 {
 	// The main url for the site.
-	var baseURL = "http://localhost:8001";
+	var baseURL = window.location.host;
 
 	// The different views.
 	var uttElement;
