@@ -56,6 +56,7 @@ CREATE TABLE `Messages` (
   `timeSent` datetime NOT NULL,
   `sender` varchar(15) NOT NULL,
   `gameId` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`sender`,`timeSent`),
   KEY `sender_idx` (`sender`),
   KEY `gameId_idx` (`gameId`),
   CONSTRAINT `game` FOREIGN KEY (`gameId`) REFERENCES `Games` (`gameId`) ON DELETE NO ACTION ON UPDATE NO ACTION,
@@ -72,17 +73,16 @@ DROP TABLE IF EXISTS `NetworkLog`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `NetworkLog` (
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `ipAddress` varchar(45) DEFAULT NULL,
+  `ipAddress` varchar(45) NOT NULL,
   `username` varchar(15) DEFAULT NULL,
   `body` mediumtext,
   `method` tinytext,
-  `url` tinytext,
-  `userAgent` mediumtext,
+  `url` tinytext NOT NULL,
+  `userAgent` mediumtext NOT NULL,
   `logId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`logId`),
-  KEY `loggedUser_idx` (`username`),
-  CONSTRAINT `loggedUser` FOREIGN KEY (`username`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=122 DEFAULT CHARSET=utf8;
+  KEY `loggedUser_idx` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=95 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -153,7 +153,7 @@ DROP TABLE IF EXISTS `Users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Users` (
-  `userName` varchar(15) NOT NULL,
+  `userName` varchar(15) NOT NULL DEFAULT '',
   `password` varchar(20) NOT NULL,
   `wins` int(11) NOT NULL DEFAULT '0',
   `loses` int(11) unsigned NOT NULL DEFAULT '0',
@@ -173,4 +173,4 @@ CREATE TABLE `Users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-12-03 20:35:01
+-- Dump completed on 2014-12-06 23:29:08
