@@ -1,7 +1,8 @@
 (function()
 {
 	var io = require('socket.io-client');
-	var bot = io.connect('http://localhost:8001');
+	var config = require('../config.js');
+	var bot = io.connect('http://localhost:' + config.port);
 	var _ = require('underscore');
 	var MakeAMove = require('./MakeAMove.js')
 

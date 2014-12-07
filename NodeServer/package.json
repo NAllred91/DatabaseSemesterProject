@@ -2,7 +2,7 @@
   "name": "NodeServer",
   "version": "0.0.1",
   "scripts": {
-    "start": "node server.js"
+    "start": "nohup node server.js"
   },
   "dependencies": {
     "async": "^0.9.0",
