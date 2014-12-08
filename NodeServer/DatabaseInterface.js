@@ -422,6 +422,16 @@
 	{
 		var db = this.db;
 
+		if(!gameId)
+		{
+			gameId = 'null';
+		}
+
+		if(!username || !message)
+		{
+			return;
+		}
+
 		var queryTemplate = _.template("INSERT INTO Messages (message, timeSent, sender, gameId) VALUES ('<%= message %>', '<%= now %>', '<%= username %>', '<%= gameId %>')");
 
 		var databaseCall = queryTemplate(
@@ -778,7 +788,7 @@
 	{
 		var db = this.db;
 
-		var queryTemplate = _.template("SELECT viewedThreadId, viewTime FROM userThreadViews WHERE username='<%= username %>'");
+		var queryTemplate = _.template("SELECT viewedThreadId, viewTime FROM UserThreadViews WHERE username='<%= username %>'");
 
 		var databaseCall = queryTemplate(
 		{
