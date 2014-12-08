@@ -2,14 +2,21 @@
 
 	var _ = require('underscore');
 	var uuid = require('uuid-v4');
+	var database;
 
 	var databaseInterface = function(db){
 		this.db = db;
+		database = db;
 	}
 
 	var getMySQLTimeStamp = function()
 	{
 		return new Date().toISOString().slice(0, 19).replace('T', ' ');
+	}
+
+	var sanitize = function(input)
+	{
+		return _.escape(input);
 	}
 
 	var getPlayers = function(db, gameId, callback)
@@ -36,6 +43,8 @@
 	{
 		var db = this.db;
 
+		username = sanitize(username);
+
 		var queryTemplate = _.template("SELECT username, wins, loses, draws, connectionCount, joinDate FROM Users WHERE username = '<%= username %>'");
 
 		var databaseCall = queryTemplate(
@@ -57,6 +66,9 @@
 	databaseInterface.prototype.validateUser = function(userName, password, callback)
 	{
 		var db = this.db;
+
+		userName = sanitize(userName);
+		password = sanitize(password);
 
 		var queryTemplate = _.template("SELECT COUNT(*), userName FROM Users WHERE userName='<%= userName %>' AND password='<%= password %>'");
 
@@ -92,6 +104,8 @@
 	{
 		var db = this.db;
 
+		userName = sanitize(userName);
+
 		var queryTemplate = _.template("UPDATE Users SET wins=wins + 1 WHERE userName='<%= userName %>'");
 
 		var databaseCall = queryTemplate(
@@ -111,6 +125,8 @@
 	databaseInterface.prototype.addUserLose = function(userName)
 	{
 		var db = this.db;
+
+		userName = sanitize(userName);
 
 		var queryTemplate = _.template("UPDATE Users SET loses=loses + 1 WHERE userName='<%= userName %>'");
 
@@ -132,6 +148,8 @@
 	{
 		var db = this.db;
 
+		userName = sanitize(userName);
+
 		var queryTemplate = _.template("UPDATE Users SET draws=draws + 1 WHERE userName='<%= userName %>'");
 
 		var databaseCall = queryTemplate(
@@ -151,6 +169,8 @@
 	databaseInterface.prototype.removeUserConnection = function(userName)
 	{
 		var db = this.db;
+
+		userName = sanitize(userName);
 
 		var queryTemplate = _.template("UPDATE Users SET connectionCount=connectionCount - 1 WHERE userName='<%= userName %>'");
 
@@ -172,6 +192,8 @@
 	{
 		var db = this.db;
 
+		userName = sanitize(userName);
+
 		var queryTemplate = _.template("UPDATE Users SET connectionCount=connectionCount + 1 WHERE userName='<%= userName %>'");
 		
 		var databaseCall = queryTemplate(
@@ -191,6 +213,9 @@
 	databaseInterface.prototype.registerUser = function(userName, password, callback)
 	{
 		var db = this.db;
+
+		userName = sanitize(userName);
+		password = sanitize(password);
 
 		var queryTemplate = _.template("INSERT INTO Users (userName, password, joinDate, connectionCount) VALUES ('<%= userName %>','<%= password %>','<%= joinDate %>',0)");
 		
@@ -255,6 +280,8 @@
 	{
 		var db = this.db;
 
+		username = sanitize(username);
+
 		var queryTemplate = _.template("SELECT state, gameId, challenger, challengee, lastMoveTime, activePlayer FROM Games WHERE (state = 'pending' OR state = 'active') AND (challenger = '<%= username %>' OR challengee = '<%= username %>')")
 		
 		var databaseCall = queryTemplate(
@@ -287,6 +314,8 @@
 	databaseInterface.prototype.getCompleteGames = function(username, callback)
 	{
 		var db = this.db;
+
+		username = sanitize(username);
 
 		var queryTemplate = _.template("SELECT state, gameId, challenger, challengee, lastMoveTime, activePlayer, wonBy FROM Games WHERE state = 'complete' AND (challenger = '<%= username %>' OR challengee = '<%= username %>')")
 		
@@ -400,6 +429,9 @@
 	{
 		var db = this.db;
 
+		username = sanitize(username);
+		message = sanitize(message);
+
 		var queryTemplate = _.template("INSERT INTO Messages (message, timeSent, sender) VALUES ('<%= message %>', '<%= now %>', '<%= username %>')");
 
 		var databaseCall = queryTemplate(
@@ -421,6 +453,9 @@
 	databaseInterface.prototype.addGameChatMessage = function(username, gameId, message)
 	{
 		var db = this.db;
+
+		username = sanitize(username);
+		message = sanitize(message);
 
 		if(!gameId)
 		{
@@ -485,6 +520,8 @@
 	{
 		var db = this.db;
 		var now = getMySQLTimeStamp();
+
+		username = sanitize(username);
 
 		var queryTemplate = _.template("UPDATE Games SET state = 'active', playableGrid = 0, activePlayer = '<%= activePlayer %>', startTime = '<%= now %>', lastMoveTime = '<%= now %>' WHERE gameId = '<%= gameId %>'");
 
@@ -618,6 +655,8 @@
 	{
 		var db = this.db;
 
+		username = sanitize(username);
+
 		var queryTemplate = _.template("INSERT INTO NetworkLog (ipAddress, username, url, method, userAgent, body) VALUES ('<%= ip %>','<%= username %>','<%= url %>','<%= method %>','<%= userAgent %>','<%= body %>')");
 	
 		var databaseCall = queryTemplate(
@@ -643,6 +682,9 @@
 	{
 		var db = this.db;
 		var threadId = uuid();
+
+		username = sanitize(username);
+		title = sanitize(title);
 
 		var queryTemplate = _.template("INSERT INTO Threads (originalPoster, lastPoster, createdTime, lastPostTime, title, threadId) VALUES ('<%= username %>','<%= username %>','<%= now %>','<%= now %>', '<%= title %>','<%= threadId %>')");
 		
@@ -671,6 +713,9 @@
 	databaseInterface.prototype.addNewPost = function(threadId, username, body, callback)
 	{
 		var db = this.db;
+
+		username = sanitize(username);
+		body = sanitize(body);
 
 		var queryTemplate = _.template("INSERT INTO Posts (threadId, poster, post, postTime) VALUES ('<%= threadId %>','<%= poster %>','<%= post %>','<%= postTime %>')");
 		
