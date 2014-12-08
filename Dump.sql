@@ -56,12 +56,13 @@ CREATE TABLE `Messages` (
   `timeSent` datetime NOT NULL,
   `sender` varchar(15) NOT NULL,
   `gameId` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`sender`,`timeSent`),
+  `messageId` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`messageId`),
   KEY `sender_idx` (`sender`),
   KEY `gameId_idx` (`gameId`),
   CONSTRAINT `game` FOREIGN KEY (`gameId`) REFERENCES `Games` (`gameId`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `sender` FOREIGN KEY (`sender`) REFERENCES `Users` (`userName`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -82,7 +83,7 @@ CREATE TABLE `NetworkLog` (
   `logId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`logId`),
   KEY `loggedUser_idx` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=95 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=168 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -173,4 +174,4 @@ CREATE TABLE `Users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-12-06 23:29:08
+-- Dump completed on 2014-12-07 19:54:59
