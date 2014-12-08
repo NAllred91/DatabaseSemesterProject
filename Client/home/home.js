@@ -1,7 +1,7 @@
 (function()
 {
 	// The main url for the site.
-	var baseURL = window.location.host;
+	var baseURL = 'nick.dlogicd.com';
 
 	// The different views.
 	var uttElement;
