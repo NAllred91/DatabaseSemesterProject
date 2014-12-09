@@ -124,6 +124,11 @@
 
 	wakeEvent(function()
 	{
+		if(!navigator.onLine)
+		{
+			location.reload();
+		}
+		console.log(navigator.onLine)
 		$.get('/ping', function()
 			{}).fail(function()
 			{
