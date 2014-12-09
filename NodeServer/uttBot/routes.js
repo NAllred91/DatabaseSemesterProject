@@ -61,7 +61,7 @@
 								console.log("Bot Error; " + JSON.stringify(err))
 							}
 						})
-					},500)
+					},1500)
 				}
 
 				if(gameData.state === "complete")
