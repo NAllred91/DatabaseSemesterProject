@@ -3,8 +3,6 @@
 	// The main url for the site.
 	var baseURL = 'www.nick.dlogicd.com';
 
-	var wakeEvent = require('wake-event');
-
 	// The different views.
 	var uttElement;
 	var searchElement;
