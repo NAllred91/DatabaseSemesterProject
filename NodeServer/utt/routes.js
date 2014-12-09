@@ -238,7 +238,6 @@
 
 						dbHelper.updateGame(gameId, game.board, 0, null, "complete", name, function(err)
 						{
-							console.log("updated")
 							if(!err)
 							{
 								io.sockets.in(gameId).emit("gameUpdate", 
@@ -261,7 +260,6 @@
 							{
 								if(io.sockets.connected[myId])
 								{
-									console.log("meEmit")
 									io.sockets.connected[myId].emit('gameRemoved', gameId);
 								
 							 	}	
@@ -272,7 +270,6 @@
 							{
 								if(io.sockets.connected[opponentId])
 								{
-									console.log("emit")
 									io.sockets.connected[opponentId].emit('gameRemoved', gameId);
 								}
 							});

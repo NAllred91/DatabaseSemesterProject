@@ -1,104 +1,130 @@
 (function()
 {
-	var io = require('socket.io-client');
 	var config = require('../config.js');
-	var bot = io.connect('http://localhost:' + config.port);
 	var _ = require('underscore');
-	var MakeAMove = require('./MakeAMove.js')
+
+	// A function to create an instance of socket.io.
+	var getSocket = function()
+	{
+		var io = require('socket.io-client');
+		return io;
+	}
+
+
+	var botArray = [
+		{
+			bot: getSocket().connect('http://localhost:' + config.port,
+				{forceNew: true}),
+			MakeAMove: require('./MakeAMove.js'),
+			name: 'Bot',
+			password: '0303'
+		},
+		{
+			bot: getSocket().connect('http://localhost:' + config.port,
+				{forceNew: true}),
+			MakeAMove: require('./MakeAMove2.js'),
+			name: 'Bot2.0',
+			password: '0303'
+		}
+	]
 
 
 
 	var setup = function(app, dbHelper, io, idMap)
 	{	
-		bot.on('gameRequested', function(user, gameId)
+		_.each(botArray, function(botObject)
 		{
-			bot.emit('subscribe', gameId);
-			_.delay(function()
+			var bot = botObject.bot;
+			bot.on('gameRequested', function(user, gameId)
 			{
-				bot.emit('acceptGame', gameId);
-			},1000)
-		});
-
-		var processData = function(gameData)
-		{
-			if(gameData.activePlayer === 'Bot')
-			{
-				var move = MakeAMove('Bot', gameData.from, 1, gameData.board, gameData.playableGrid);
-
-				var big = move.big;
-				var mini = move.mini;
+				bot.emit('subscribe', gameId);
 				_.delay(function()
 				{
-					bot.emit('updateGame', gameData.gameId, big, mini, function(err)
+					bot.emit('acceptGame', gameId);
+				},1000)
+			});
+
+			var processData = function(gameData)
+			{
+				if(gameData.activePlayer === botObject.name)
+				{
+					var move = botObject.MakeAMove(botObject.name, gameData.from, 1, gameData.board, gameData.playableGrid);
+
+					var big = move.big;
+					var mini = move.mini;
+					_.delay(function()
 					{
-						if(err)
+						bot.emit('updateGame', gameData.gameId, big, mini, function(err)
 						{
-							console.log("Bot Error; " + JSON.stringify(err))
-						}
-					})
-				},1500)
-			}
+							if(err)
+							{
+								console.log("Bot Error; " + JSON.stringify(err))
+							}
+						})
+					},500)
+				}
 
-			if(gameData.state === "complete")
-			{
-				bot.emit('unsubscribe', gameData.gameId);
-			}
-		};
-
-		bot.on("gameStarted", function(gameInfo)
-		{
-			dbHelper.getGameData(gameInfo.gameId, function(game)
+				if(gameData.state === "complete")
 				{
-					if(game)
-					{
-						processData(game);
-					}
-				});
-		});
+					bot.emit('unsubscribe', gameData.gameId);
+				}
+			};
 
-		bot.on("gameUpdate", function(gameData)
-		{
-			processData(gameData);
-		});
-
-		var initialize = function()
-		{
-			dbHelper.getActiveAndPendingGames('Bot', function(games)
+			bot.on("gameStarted", function(gameInfo)
 			{
-				_.each(games, function(game)
-				{
-					bot.emit('subscribe', game.gameId);
-					dbHelper.getGameData(game.gameId, function(game)
+				bot.emit('subscribe', gameInfo.gameId);
+				dbHelper.getGameData(gameInfo.gameId, function(game)
 					{
 						if(game)
 						{
 							processData(game);
 						}
 					});
-				});
 			});
-		}
 
-		// Check to see if the Bot is registered, if not register the Bot.
-		dbHelper.validateUser('Bot', '0303', function(user)
-		{
-			if(!user)
+			bot.on("gameUpdate", function(gameData)
 			{
-				dbHelper.registerUser('Bot', '0303', function()
+				processData(gameData);
+			});
+
+			var initialize = function()
+			{
+				dbHelper.getActiveAndPendingGames(botObject.name, function(games)
 				{
-					bot.emit('identify', 'Bot');
+					_.each(games, function(game)
+					{
+						bot.emit('subscribe', game.gameId);
+						dbHelper.getGameData(game.gameId, function(game)
+						{
+							if(game)
+							{
+								processData(game);
+							}
+						});
+					});
+				});
+			}
+
+			// Check to see if the Bot is registered, if not register the Bot.
+			dbHelper.validateUser(botObject.name, botObject.password, function(user)
+			{
+				if(!user)
+				{
+					dbHelper.registerUser(botObject.name, botObject.password, function()
+					{
+						bot.emit('identify', botObject.name);
+						// Wait 6 seconds to make sure that the Bot has connected completely.
+						_.delay(function(){initialize()},6000);
+					});
+				}
+				else
+				{
+					bot.emit('identify', botObject.name);
 					// Wait 6 seconds to make sure that the Bot has connected completely.
 					_.delay(function(){initialize()},6000);
-				});
-			}
-			else
-			{
-				bot.emit('identify', 'Bot');
-				// Wait 6 seconds to make sure that the Bot has connected completely.
-				_.delay(function(){initialize()},6000);
-			}
-		});
-		
+				}
+			});
+		});		
 	}
 
 	module.exports = setup;
