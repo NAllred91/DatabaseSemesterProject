@@ -116,7 +116,7 @@
 		})
 		.fail(function()
 		{
-			location.href= baseURL;
+			location.reload();
 		});
 	}
 
