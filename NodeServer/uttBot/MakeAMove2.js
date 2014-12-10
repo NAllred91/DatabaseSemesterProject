@@ -129,6 +129,7 @@
 		{
 			return .9;
 		}
+		removeMove(board, move.big, move.mini);
 		if(move.mini == 5)
 		{
 			cumulativeScore = cumulativeScore + .1;

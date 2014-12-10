@@ -112,6 +112,7 @@
 		var opponentsMoveRating = evaluateOpponentsMoves(o, x, appliedMove.board, appliedMove.playableGrid);
 		var cumulativeScore = .5;
 		var totalDataPoints = 1;
+
 		
 		// 1 if you win the game.
 		if(bigVictoryCheck(appliedMove.board) === x)
@@ -128,6 +129,7 @@
 		// 1 if you win the board.
 		if(appliedMove.board[move.big].wonBy === x)
 		{
+
 			//console.log("littleVic")
 			cumulativeScore = cumulativeScore + 1;
 			totalDataPoints = totalDataPoints + 1;
