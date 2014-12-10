@@ -18,5 +18,5 @@ The source code is organized into a "Client" and "NodeServer" directory.  The "C
 
 ** The most important file to look at for this project is DatabaseSemesterProject/NodeServer/DatabaseInterface.js **
 
-The data dictionary, user guide, EER diagram, schema diagram, an empty database dump (just schema), and a full database dump are located in the DatabaseSemesterProject directory.
+The data dictionary, user guide, EER diagram, schema diagram, postmortem writeup, an empty database dump (just schema), and a full database dump are located in the DatabaseSemesterProject directory.
 
