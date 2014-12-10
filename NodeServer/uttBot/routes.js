@@ -46,9 +46,18 @@
 
 			var processData = function(gameData)
 			{
+				var opponent;
+				if(gameData.from === botObject.name)
+				{
+					opponent = gameData.to;
+				}
+				else
+				{
+					opponent = gameData.from;
+				}
 				if(gameData.activePlayer === botObject.name)
 				{
-					var move = botObject.MakeAMove(botObject.name, gameData.from, 1, gameData.board, gameData.playableGrid);
+					var move = botObject.MakeAMove(botObject.name, opponent, 1, gameData.board, gameData.playableGrid);
 
 					var big = move.big;
 					var mini = move.mini;

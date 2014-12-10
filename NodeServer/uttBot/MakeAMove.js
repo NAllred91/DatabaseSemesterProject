@@ -69,7 +69,6 @@
 	// following move.
 	var evaluateOpponentsMoves = function(x, o, board, playableGrid)
 	{
-
 		var moves = getViableMoves(board, playableGrid);
 		var canWinGrid = false;
 		var canWinGame = false;
@@ -82,8 +81,6 @@
 			{
 				canWinGrid = true;
 			}
-
-			removeMove(board, move.big, move.mini);
 		});
 
 		if(canWinGrid)
@@ -134,8 +131,6 @@
 			cumulativeScore = cumulativeScore + 1;
 			totalDataPoints = totalDataPoints + 1;
 		}
-
-		removeMove(board, move.big, move.mini);
 
 		return (cumulativeScore / totalDataPoints) * (1 - opponentsMoveRating);
 		
@@ -240,6 +235,7 @@
 	// Applies a move to a board.
 	var applyMove = function(board, big, mini, user)
 		{
+			var board = JSON.parse(JSON.stringify(board));
 			board[big].moves[mini] = user;
 			board[big].wonBy = littleVictoryCheck(board[big].moves);
 			var appliedMove = 

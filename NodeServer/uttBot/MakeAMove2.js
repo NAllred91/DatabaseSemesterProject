@@ -88,12 +88,13 @@
 		{
 			var appliedMove = applyMove(board, move.big, move.mini, x);
 
+
 			if(appliedMove.board[move.big].wonBy === x)
 			{
 				canWinGrid = true;
 			}
 
-			removeMove(board, move.big, move.mini);
+			//removeMove(board, move.big, move.mini);
 		});
 
 		if(canWinGrid)
@@ -118,21 +119,22 @@
 		{
 			return 1;
 		}
+		// .9 if you win the board.
+		if(appliedMove.board[move.big].wonBy === x)
+		{
+			return .9;
+		}
 		
 		// 0 if you give the opponent the win.
 		if(opponentsMoveRating === 1)
 		{
 			return 0;
 		}
-		// .9 if you win the board.
-		if(appliedMove.board[move.big].wonBy === x)
-		{
-			return .9;
-		}
-		removeMove(board, move.big, move.mini);
+		
+		//removeMove(board, move.big, move.mini);
 		if(move.mini == 5)
 		{
-			cumulativeScore = cumulativeScore + .1;
+			cumulativeScore = cumulativeScore - .1;
 		}
 
 		return cumulativeScore - opponentsMoveRating;
@@ -233,6 +235,7 @@
 	// Applies a move to a board.
 	var applyMove = function(board, big, mini, user)
 		{
+			var board = JSON.parse(JSON.stringify(board));
 			board[big].moves[mini] = user;
 			board[big].wonBy = littleVictoryCheck(board[big].moves);
 			var appliedMove = 
