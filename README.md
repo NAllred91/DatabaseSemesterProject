@@ -2,14 +2,6 @@ DatabaseSemesterProject
 =======================
 
 This is the project for Fall Semester COSC 457.  
-
-
-The website is hosted at :
-
-            nick.dlogicd.com
-                  -OR-
-            www.dlogicd.com:6591
-            
             
 
 This site is served by a Node.js server and has a MySQL database.
