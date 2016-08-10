@@ -12,3 +12,4 @@ The source code is organized into a "Client" and "NodeServer" directory.  The "C
 
 The data dictionary, user guide, EER diagram, schema diagram, postmortem writeup, an empty database dump (just schema), and a full database dump are located in the DatabaseSemesterProject directory.
 
+please run brew `services start mysql` to start the database.
